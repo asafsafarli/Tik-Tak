@@ -13,8 +13,9 @@ import {
   fetchProfile,
   login as loginRequest,
   signup as signupRequest,
+  updateProfile as updateProfileRequest,
 } from "../api/session";
-import type { Profile } from "./types";
+import type { Profile, UpdateProfilePayload } from "./types";
 
 interface SessionContextValue {
   profile: Profile | null;
@@ -23,6 +24,7 @@ interface SessionContextValue {
   login: (phone: string, password: string) => Promise<void>;
   signup: (fullName: string, phone: string, password: string) => Promise<void>;
   logout: () => void;
+  updateProfile: (payload: UpdateProfilePayload) => Promise<void>;
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null);
@@ -62,6 +64,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [login],
   );
 
+  const updateProfile = useCallback(async (payload: UpdateProfilePayload) => {
+    setProfile(await updateProfileRequest(payload));
+  }, []);
+
   const logout = useCallback(() => {
     tokenStorage.clear();
     setProfile(null);
@@ -76,6 +82,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         login,
         signup,
         logout,
+        updateProfile,
       }}
     >
       {children}

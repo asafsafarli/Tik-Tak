@@ -1,5 +1,5 @@
 import { apiFetch } from "@/shared/api";
-import type { LoginResult, Profile } from "../model/types";
+import type { LoginResult, Profile, UpdateProfilePayload } from "../model/types";
 
 export function login(phone: string, password: string) {
   return apiFetch<LoginResult>("/auth/login", {
@@ -17,4 +17,8 @@ export function signup(full_name: string, phone: string, password: string) {
 
 export function fetchProfile() {
   return apiFetch<Profile>("/profile", { auth: true });
+}
+
+export function updateProfile(payload: UpdateProfilePayload) {
+  return apiFetch<Profile>("/profile", { method: "PUT", auth: true, body: payload });
 }
