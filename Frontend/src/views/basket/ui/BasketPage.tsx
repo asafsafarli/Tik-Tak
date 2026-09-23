@@ -113,12 +113,12 @@ export function BasketPage() {
                       <span>{formatPrice(total)}</span>
                     </div>
 
-                    <button
-                      type="button"
+                    <Link
+                      href="/checkout"
                       className="flex h-[60px] w-full items-center justify-center rounded-[10px] bg-[#92D871] text-[18px] font-bold leading-none text-white transition-opacity hover:opacity-90"
                     >
                       Sifarişi tamamla
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </aside>

@@ -8,6 +8,7 @@ import { CartSidebar } from "@/widgets/cart-sidebar";
 import { Container } from "@/shared/ui/container";
 import { useSession } from "@/entities/session";
 import { useFavorite } from "@/entities/favorite";
+import { SKIP_AUTH_GUARD } from "@/shared/config/env";
 
 // `AuthShell.tsx`-dəki eyni naxışın tərsi — bura yalnız girişli istifadəçi
 // üçündür, girişsiz açılsa /login-ə göndərilir.
@@ -17,10 +18,10 @@ export function FavoritesPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) router.replace("/login");
+    if (!isLoading && !isAuthenticated && !SKIP_AUTH_GUARD) router.replace("/login");
   }, [isLoading, isAuthenticated, router]);
 
-  if (!isAuthenticated) return null;
+  if (!isAuthenticated && !SKIP_AUTH_GUARD) return null;
 
   return (
     <>
