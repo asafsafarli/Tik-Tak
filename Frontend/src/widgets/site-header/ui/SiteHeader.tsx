@@ -6,6 +6,7 @@ import { BasketIcon, FavoritesIcon, UserIcon } from "@/shared/ui/icons";
 import { HEADER_NAV } from "@/shared/config/site";
 import { useSession } from "@/entities/session";
 import { useBasket } from "@/entities/basket";
+import { SKIP_AUTH_GUARD } from "@/shared/config/env";
 import { SiteSearch } from "./SiteSearch";
 
 const ICONS = {
@@ -66,7 +67,7 @@ export function SiteHeader({ variant = "landing", wide = false }: SiteHeaderProp
             const Icon = ICONS[item.icon];
             // Giriş edilməyibsə bu bölmələr login-ə aparır; edilibsə öz
             // səhifəsinə (səhifələr hazır olana qədər `item.href` = "#").
-            const href = isAuthenticated ? item.href : "/login";
+            const href = isAuthenticated || SKIP_AUTH_GUARD ? item.href : "/login";
             return (
               <Link
                 key={item.label}

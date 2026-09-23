@@ -38,7 +38,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined" || !tokenStorage.getAccessToken()) return;
     fetchProfile()
       .then(setProfile)
-      .catch(() => tokenStorage.clear())
+      // 401/token-bitmə hallarını `apiFetch` özü idarə edir (refresh cəhd
+      // edir, alınmasa özü /login-ə yönləndirib tokeni silir) — bura düşən
+      // demək olar hər şey müvəqqəti infrastruktur xətasıdır (502, şəbəkə).
+      // Tokeni silmirik ki, API qayıdandan sonra istifadəçi yenidən login
+      // etməli olmasın.
+      .catch(() => {})
       .finally(() => setIsLoading(false));
   }, []);
 
