@@ -38,7 +38,7 @@ Bütün cavablar eyni zərfə sarılıb: `{ message, data, result }`. `apiFetch`
 | Categories | `GET /categories` | ✅ Qoşulub (auth + fallback siyahı) | `entities/category` |
 | Auth | `POST /auth/login`, `/auth/signup`, `/auth/refresh` | ✅ Qoşulub | `entities/session` |
 | Profile (oxu) | `GET /profile` | ✅ Qoşulub (yalnız sessiya doğrulaması üçün) | `entities/session` |
-| Profile (redaktə) | `PUT /profile` | ⏳ Qoşulmayıb | — |
+| Profile (redaktə) | `PUT /profile` | ✅ Qoşulub (`/profile` səhifəsi — ad, ünvan, şifrə) | `entities/session`, `features/profile/edit-form` |
 | Products | `GET /products` (auth + fallback siyahı, `category_id` ilə), `GET /products/:id` | ✅ Qoşulub | `entities/product`, `views/product-detail` |
 | Favorites | `POST /products/:id/favorite`, `GET /products/favorites` | ✅ Qoşulub | `entities/favorite`, `views/favorites` |
 | Basket | `GET /basket`, `POST /basket/:id/add`, `POST /basket/:id/remove`, `DELETE /basket/:id/remove-all`, `DELETE /basket/clear` | ✅ Qoşulub (yalnız girişli istifadəçi — qonaq "Səbətə əlavə et" klikləyəndə /login-ə yönləndirilir) | `entities/basket` |

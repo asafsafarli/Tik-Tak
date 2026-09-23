@@ -51,7 +51,7 @@ export const SOCIAL_LINKS = [
 ];
 
 export const HEADER_NAV = [
-  { label: "Hesabım", href: "#", icon: "user" as const },
+  { label: "Hesabım", href: "/profile", icon: "user" as const },
   { label: "Siyahılarım", href: "/favorites", icon: "favorites" as const },
   { label: "Səbətim", href: "/basket", icon: "basket" as const },
 ];
