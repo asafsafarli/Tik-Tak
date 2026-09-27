@@ -45,7 +45,7 @@ function toLines(basket: BasketResponse): BasketLine[] {
 // server-ə gedir, cavabdakı tam siyahı ilə state əvəzlənir (optimistic update
 // yoxdur). Backend basket endpoint-lərinin hamısı auth tələb etdiyindən qonaq
 // məhsulu səbətə əlavə edə bilməz — məhsulları görə bilir, amma "əlavə et"
-// klikləyəndə qeydiyyatdan keçsin deyə birbaşa /login-ə yönləndirilir.
+// klikləyəndə qeydiyyatdan keçsin deyə birbaşa /register-ə yönləndirilir.
 export function BasketProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useSession();
   const router = useRouter();
@@ -78,7 +78,7 @@ export function BasketProvider({ children }: { children: ReactNode }) {
   const addOne = useCallback(
     (product: Product) => {
       if (!isAuthenticated) {
-        router.push("/login");
+        router.push("/register");
         return;
       }
       addToBasket(product.id)

@@ -15,8 +15,9 @@ function clean(text: string | null): string | null {
   return normalized.length > 0 ? normalized : null;
 }
 
-// Kampaniya detal route-u hələ yoxdur — hazırda hamısı `#`-ə gedir.
-const HREF = "#";
+// Kampaniya detal route-u yoxdur — kartlar kateqoriyalar səhifəsinə aparır,
+// oradan istifadəçi (qonaq da) kateqoriya seçib məhsullara baxır.
+export const CAMPAIGN_HREF = "/category";
 
 /** Promo hero slayderi üçün bütün kampaniyalar (dark / red növbələşir). */
 export function toHeroSlides(campaigns: Campaign[]): CampaignCard[] {
@@ -27,7 +28,7 @@ export function toHeroSlides(campaigns: Campaign[]): CampaignCard[] {
     title: campaign.title,
     text: clean(campaign.description),
     imgUrl: campaign.img_url,
-    href: HREF,
+    href: CAMPAIGN_HREF,
   }));
 }
 
@@ -47,6 +48,6 @@ export function toOfferCards(
     title: campaign.title,
     text: clean(campaign.description),
     imgUrl: campaign.img_url,
-    href: HREF,
+    href: CAMPAIGN_HREF,
   }));
 }
