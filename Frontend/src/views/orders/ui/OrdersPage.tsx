@@ -1,0 +1,85 @@
+"use client";
+
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+import { ORDER_STATUS_LABELS, useMyOrders, type Order } from "@/entities/order";
+import { formatDate } from "@/shared/lib/format-date";
+import { AccountShell } from "./AccountShell";
+import { formatSubtotal } from "../lib/format-subtotal";
+
+const COLUMNS = ["No", "Tarix", "Çatdırılma ünvanı", "Məhsul sayı", "Subtotal/Çatdırılma", "Status", ""];
+
+export function OrdersPage() {
+  return <AccountShell>{(enabled) => <OrdersTable enabled={enabled} />}</AccountShell>;
+}
+
+function OrdersTable({ enabled }: { enabled: boolean }) {
+  const { orders, error, isLoading } = useMyOrders(enabled);
+
+  return (
+    <>
+      <h2 className="text-[16px] font-normal leading-none text-ink">Sifariş Tarixçəsi</h2>
+
+      {isLoading ? (
+        <p className="mt-6 text-[14px] text-muted">Yüklənir...</p>
+      ) : error ? (
+        <p className="mt-6 text-[14px] text-[#F0847A]">Sifarişlər yüklənmədi, yenidən cəhd edin.</p>
+      ) : !orders?.length ? (
+        <p className="mt-6 text-[14px] text-muted">Hələ sifarişiniz yoxdur.</p>
+      ) : (
+        <div className="mt-6 overflow-x-auto">
+          <table className="w-full min-w-[760px] border-separate border-spacing-0 text-left text-[13px] leading-none text-ink">
+            <thead>
+              <tr>
+                {COLUMNS.map((column, index) => (
+                  <th
+                    key={column || "actions"}
+                    className={`h-[46px] bg-[#F4F4F6] px-4 font-normal ${
+                      index === 0 ? "rounded-l-[10px]" : ""
+                    } ${index === COLUMNS.length - 1 ? "rounded-r-[10px]" : ""}`}
+                  >
+                    {column}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="font-light">
+              {orders.map((order) => (
+                <OrderRow key={order.id} order={order} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  );
+}
+
+function OrderRow({ order }: { order: Order }) {
+  const count = order.items.reduce((sum, item) => sum + item.quantity, 0);
+  const cell = "h-[38px] border-b border-neutral-100 px-4";
+
+  return (
+    <tr>
+      <td className={cell}>{order.orderNumber}</td>
+      <td className={cell}>{formatDate(order.createdAt)}</td>
+      <td className={`${cell} max-w-[140px] truncate`} title={order.address}>
+        {order.address}
+      </td>
+      <td className={cell}>{count}</td>
+      <td className={cell}>{formatSubtotal(order.total, order.deliveryFee)}</td>
+      <td className={`${cell} ${order.status === "CANCELLED" ? "text-[#F0847A]" : ""}`}>
+        {ORDER_STATUS_LABELS[order.status]}
+      </td>
+      <td className={`${cell} text-right`}>
+        <Link
+          href={`/orders/${order.id}`}
+          className="inline-flex items-center gap-0.5 whitespace-nowrap hover:text-leaf"
+        >
+          detallar
+          <ChevronRight className="size-3.5" strokeWidth={1.5} />
+        </Link>
+      </td>
+    </tr>
+  );
+}
