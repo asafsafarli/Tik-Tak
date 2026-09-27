@@ -148,6 +148,8 @@ Auth tələb etmir (refresh token body-də gedir).
 
 **Cavab (200)** — yenilənmiş profil obyekti (yuxarıdakı kimi).
 
+`address` məcburidir — boş və ya `null` göndərilsə `400 ["address should not be empty", "address must be a string"]` (canlıda yoxlanılıb). Ünvanı olmayan istifadəçi yalnız adını dəyişəndə də ünvan tələb olunur, forma bunu client-də yoxlayır.
+
 ---
 
 ## Categories
@@ -357,7 +359,7 @@ Cari basket-dən sifariş yaradır (basket-i də təmizləyir — canlı yoxlan�
 
 ### `GET /orders/user/:id` (auth)
 
-Tək sifarişin detalı — yuxarıdakı siyahı elementinin eynisi, `data` bir obyekt.
+Tək sifarişin detalı — yuxarıdakı siyahı elementinin eynisi. **Diqqət:** canlıda (2026-09-27) bu endpoint **zərfsiz** qayıdır — `{id, orderNumber, total, ...}` birbaşa, `{message,data,result}` yox (`GET /orders/user` isə zərflidir). `apiFetch` `data`-nı açdığı üçün qoşarkən bunu nəzərə al.
 
 ---
 

@@ -65,6 +65,7 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
           id="address"
           placeholder="Unvanınız"
           autoComplete="street-address"
+          required
           value={form.address}
           onChange={(event) => form.setAddress(event.target.value)}
         />
