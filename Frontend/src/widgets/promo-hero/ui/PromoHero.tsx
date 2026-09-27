@@ -92,7 +92,15 @@ export function PromoHero({ slides }: PromoHeroProps) {
                       />
                     )}
 
-                    <div className="relative">
+                    {/* Bütün kart kliklənir — "Ətraflı" isə klaviatura üçün əsas link olaraq qalır. */}
+                    <Link
+                      href={slide.href}
+                      aria-hidden
+                      tabIndex={-1}
+                      className="absolute inset-0"
+                    />
+
+                    <div className="pointer-events-none relative">
                       <h2 className="line-clamp-2 text-[26px] font-extrabold leading-tight [text-shadow:0_2px_16px_rgba(0,0,0,0.55)] sm:text-3xl lg:text-[34px]">
                         {slide.title}
                       </h2>

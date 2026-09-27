@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import { useBasket } from "@/entities/basket";
 import { unitLabel } from "@/entities/product";
@@ -99,12 +100,12 @@ export function CartSidebar({ className = "" }: { className?: string }) {
               </div>
             </div>
 
-            <button
-              type="button"
-              className="rounded-xl bg-ink px-4 py-3 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+            <Link
+              href="/checkout"
+              className="rounded-xl bg-ink px-4 py-3 text-center text-[14px] font-medium text-white transition-opacity hover:opacity-90"
             >
               Sifarişi tamamla
-            </button>
+            </Link>
           </>
         )}
       </aside>
