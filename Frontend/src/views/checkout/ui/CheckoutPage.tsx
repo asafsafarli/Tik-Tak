@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SiteHeader } from "@/widgets/site-header";
@@ -10,6 +10,8 @@ import { useBasket } from "@/entities/basket";
 import { checkout, type PaymentMethod } from "@/entities/order";
 import { formatPrice } from "@/shared/lib/format-price";
 import { SKIP_AUTH_GUARD } from "@/shared/config/env";
+import { CheckoutConfirmModal } from "./CheckoutConfirmModal";
+import { CheckoutSuccess } from "./CheckoutSuccess";
 
 const PAYMENT_METHODS: { value: PaymentMethod; label: string; icon: string }[] = [
   { value: "CASH", label: "Qapıda nağd ödəmə", icon: "/money.svg" },
@@ -27,13 +29,33 @@ export function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isDone, setIsDone] = useState(false);
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated && !SKIP_AUTH_GUARD) router.replace("/login");
   }, [isLoading, isAuthenticated, router]);
 
+  const closeConfirm = useCallback(() => setIsConfirmOpen(false), []);
+
   if (!isAuthenticated && !SKIP_AUTH_GUARD) return null;
 
-  async function handleSubmit() {
+  if (isDone) {
+    return (
+      <>
+        <SiteHeader variant="storefront" />
+        <CheckoutSuccess />
+      </>
+    );
+  }
+
+  function openConfirm() {
+    if (!profile || lines.length === 0 || isSubmitting) return;
+    setError(null);
+    setIsConfirmOpen(true);
+  }
+
+  async function handleConfirm() {
     if (!profile || lines.length === 0 || isSubmitting) return;
     setIsSubmitting(true);
     setError(null);
@@ -45,9 +67,11 @@ export function CheckoutPage() {
         phone: profile.phone,
       });
       clear();
-      router.push("/");
+      setIsDone(true);
     } catch {
       setError("Sifariş göndərilmədi, yenidən cəhd edin.");
+      setIsConfirmOpen(false);
+    } finally {
       setIsSubmitting(false);
     }
   }
@@ -158,7 +182,7 @@ export function CheckoutPage() {
 
                 <button
                   type="button"
-                  onClick={handleSubmit}
+                  onClick={openConfirm}
                   disabled={isSubmitting || lines.length === 0}
                   className="flex h-[60px] w-[484px] max-w-full items-center justify-center self-center rounded-[10px] bg-ink text-[24px] font-bold leading-none text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
@@ -205,6 +229,14 @@ export function CheckoutPage() {
           </div>
         </Container>
       </main>
+
+      {isConfirmOpen ? (
+        <CheckoutConfirmModal
+          isSubmitting={isSubmitting}
+          onConfirm={handleConfirm}
+          onClose={closeConfirm}
+        />
+      ) : null}
     </>
   );
 }
