@@ -24,6 +24,12 @@ export function useProfileForm(profile: Profile | null) {
       setError("Adınızı daxil edin");
       return;
     }
+    // Backend boş ünvanı qəbul etmir (`400 address should not be empty`) —
+    // ünvanı olmayan istifadəçi yalnız adını dəyişəndə də.
+    if (!address.trim()) {
+      setError("Ünvanınızı daxil edin");
+      return;
+    }
     const changingPassword = password !== "" || passwordRepeat !== "";
     if (changingPassword && password !== passwordRepeat) {
       setError("Şifrələr eyni deyil");
