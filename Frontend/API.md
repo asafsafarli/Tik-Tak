@@ -42,7 +42,7 @@ Bütün cavablar eyni zərfə sarılıb: `{ message, data, result }`. `apiFetch`
 | Products | `GET /products` (auth + fallback siyahı, `category_id` ilə), `GET /products/:id` | ✅ Qoşulub | `entities/product`, `views/product-detail` |
 | Favorites | `POST /products/:id/favorite`, `GET /products/favorites` | ✅ Qoşulub | `entities/favorite`, `views/favorites` |
 | Basket | `GET /basket`, `POST /basket/:id/add`, `POST /basket/:id/remove`, `DELETE /basket/:id/remove-all`, `DELETE /basket/clear` | ✅ Qoşulub (yalnız girişli istifadəçi — qonaq "Səbətə əlavə et" klikləyəndə /login-ə yönləndirilir) | `entities/basket` |
-| Orders | `POST /orders/checkout`, `GET /orders/user`, `GET /orders/user/:id` | ⏳ Qoşulmayıb | — |
+| Orders | `POST /orders/checkout`, `GET /orders/user` (`GET /orders/user/:id` istifadə olunmur — zərfsizdir, detal səhifəsi siyahıdan tapır) | ✅ Qoşulub | `entities/order`, `views/checkout`, `views/orders` |
 | Upload | `POST /upload` | ⏳ Qəsdən qoşulmayıb — `img_url` sahələri (olsaydı, profil şəkli kimi) sadə URL input olaraq qalacaq, fayl seçici yoxdur (Admin panelindəki qərarla eyni) | — |
 
 Yeni bir hissə qoşulanda bu cədvəldəki sətri **✅ Qoşulub**-a çevir və fayl sütununu doldur.
@@ -388,7 +388,7 @@ Tək sifarişin detalı — yuxarıdakı siyahı elementinin eynisi. **Diqqət:*
 | Products | `entities/product` | `src/entities/product` |
 | Favorites | `entities/favorite` | `src/entities/favorite` |
 | Basket | `entities/basket` | `src/entities/basket` |
-| Orders | `entities/order` | *(hələ yaradılmayıb)* |
+| Orders | `entities/order` | `src/entities/order` |
 | Upload | — | `shared/api/upload.ts` *(hələ yaradılmayıb)* |
 
 Admin-dən fərqli olaraq Frontend-də React Query yoxdur — `apiFetch` sadə `fetch` sarğısıdır, Server Component-lərdə Next-in öz ISR keşi (`revalidate`), Client Component-lərdə `useState`/`useEffect` istifadə olunur (bax `entities/campaign`, `entities/category`, `entities/session`).

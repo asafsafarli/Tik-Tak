@@ -5,10 +5,9 @@ import { usePathname } from "next/navigation";
 import { House } from "lucide-react";
 import { UserIcon } from "@/shared/ui/icons";
 
-// "Sifarişlərim" səhifəsi hələ yoxdur — hazır olana qədər `href` = "#".
 const ITEMS = [
   { label: "Hesab məlumatlarım", href: "/profile", icon: "user" as const },
-  { label: "Sifarişlərim", href: "#", icon: "orders" as const },
+  { label: "Sifarişlərim", href: "/orders", icon: "orders" as const },
 ];
 
 export function AccountSidebar({ className = "" }: { className?: string }) {
@@ -20,7 +19,8 @@ export function AccountSidebar({ className = "" }: { className?: string }) {
       className={`flex flex-col rounded-[10px] bg-white px-10 py-6 ${className}`}
     >
       {ITEMS.map((item, index) => {
-        const active = pathname === item.href;
+        // `/orders/:id` detalında da "Sifarişlərim" aktiv qalır.
+        const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link
             key={item.label}
