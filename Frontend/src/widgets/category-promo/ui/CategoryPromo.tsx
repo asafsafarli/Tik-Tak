@@ -1,5 +1,5 @@
 // Kateqoriya detalı səhifəsinin sol sütunundakı endirim kartı. Figma dev-mode
-// spec: 338×432, 0° fırlanma, opacity 1 — `/fruit.svg` bu ölçüdə eksport
+// spec: 338×432 (maks.; dar sütunda nisbəti saxlayıb kiçilir), 0° fırlanma, opacity 1 — `/fruit.svg` bu ölçüdə eksport
 // olunub (mətn və yaşıl fon şəklin öz içindədir, ayrıca overlay lazım deyil).
 // Hazırda "Meyvələr və Tərəvəzlər" kateqoriyasına xasdır (bax
 // `entities/product/model/fallback.ts`) — başqa kateqoriyalar üçün fərqli
@@ -7,7 +7,7 @@
 export function CategoryPromo({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`aspect-[338/432] w-full max-w-[338px] overflow-hidden rounded-[10px] lg:h-[432px] lg:w-[338px] ${className}`}
+      className={`aspect-[338/432] w-full max-w-[338px] overflow-hidden rounded-[10px] ${className}`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

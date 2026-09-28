@@ -13,7 +13,7 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="flex h-full w-full max-w-[187px] flex-col gap-2 rounded-[10px] bg-white p-3 text-center shadow-[0px_0px_10px_0px_#0000001C]">
       <Link href={`/product/${product.id}`} className="contents">
-        <span className="mx-auto flex h-[127px] w-[127px] items-center justify-center overflow-hidden rounded-lg">
+        <span className="mx-auto flex aspect-square w-full max-w-[127px] items-center justify-center overflow-hidden rounded-lg">
           {product.img_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -29,7 +29,7 @@ export function ProductCard({ product }: { product: Product }) {
         </span>
 
         <div className="flex flex-1 flex-col gap-0.5">
-          <span className="text-center text-[16px] font-bold leading-none text-ink">
+          <span className="line-clamp-2 break-words text-center text-[16px] font-bold leading-tight text-ink">
             {product.title}
           </span>
           <span className="text-[13px] font-semibold text-ink">
