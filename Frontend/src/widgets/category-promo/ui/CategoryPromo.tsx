@@ -4,10 +4,11 @@
 // Hazırda "Meyvələr və Tərəvəzlər" kateqoriyasına xasdır (bax
 // `entities/product/model/fallback.ts`) — başqa kateqoriyalar üçün fərqli
 // endirim şəkli olanda bu komponent kateqoriyaya görə parametrləşdiriləcək.
+// Telefon/planşetdə (lg-dən aşağı) gizlidir — məhsulları aşağı itələməsin.
 export function CategoryPromo({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`aspect-[338/432] w-full max-w-[338px] overflow-hidden rounded-[10px] ${className}`}
+      className={`hidden aspect-[338/432] w-full max-w-[338px] overflow-hidden lg:block rounded-[10px] ${className}`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

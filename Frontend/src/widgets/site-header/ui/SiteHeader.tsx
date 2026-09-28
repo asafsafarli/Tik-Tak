@@ -72,7 +72,10 @@ export function SiteHeader({ variant = "landing", wide = false }: SiteHeaderProp
               <Link
                 key={item.label}
                 href={href}
-                className="relative flex items-center gap-2 text-[14px] font-normal leading-none tracking-normal text-[#2B3043] transition-opacity hover:opacity-70"
+                className={`relative flex items-center text-[14px] font-normal leading-none tracking-normal text-[#2B3043] transition-opacity hover:opacity-70 ${
+                  // say nişanı ikonun sağına çıxır — mətnə dəyməsin
+                  item.icon === "basket" && count > 0 ? "gap-3.5" : "gap-2"
+                }`}
               >
                 <span className="relative">
                   <Icon className="h-4 w-auto shrink-0" />

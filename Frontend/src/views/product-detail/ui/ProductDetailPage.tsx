@@ -9,6 +9,7 @@ import { CategoryPromo } from "@/widgets/category-promo";
 import { CategorySidebar, useVisibleCategories } from "@/widgets/category-sidebar";
 import { CartSidebar } from "@/widgets/cart-sidebar";
 import { Container } from "@/shared/ui/container";
+import { CART_COLUMN, STOREFRONT_COLUMNS } from "@/shared/config/layout";
 import { QuantityStepper } from "@/shared/ui/quantity-stepper";
 import { useBasket } from "@/entities/basket";
 import { useFavorite } from "@/entities/favorite";
@@ -74,16 +75,16 @@ export function ProductDetailPage({ productId }: { productId: number }) {
             </Link>
           </nav>
 
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:gap-5">
-            <div className="flex flex-col gap-5 lg:w-[338px] lg:shrink-0">
+          <div className={STOREFRONT_COLUMNS}>
+            <div className="flex flex-col gap-5">
               <CategorySidebar
                 categories={visibleCategories}
                 activeCategoryId={product.category.id}
               />
-              <CategoryPromo className="lg:shrink-0" />
+              <CategoryPromo />
             </div>
 
-            <div className="flex-1 rounded-[10px] bg-white p-8 shadow-[0px_0px_10px_0px_#0000001C]">
+            <div className="@container min-w-0 rounded-[10px] bg-white p-5 shadow-[0px_0px_10px_0px_#0000001C] sm:p-8">
               <div className="flex items-center justify-between">
                 <button
                   type="button"
@@ -107,7 +108,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
                 </button>
               </div>
 
-              <div className="mt-8 flex flex-col gap-8 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-8 @[560px]:flex-row">
                 <button
                   type="button"
                   onClick={() => {
@@ -115,7 +116,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
                     setIsImageOpen(true);
                   }}
                   aria-label="Şəkli böyüt"
-                  className="mx-auto flex h-[280px] w-[280px] shrink-0 cursor-zoom-in items-center justify-center overflow-hidden rounded-lg sm:mx-0"
+                  className="mx-auto flex aspect-square w-full max-w-[280px] shrink-0 cursor-zoom-in items-center justify-center overflow-hidden rounded-lg @[560px]:mx-0"
                 >
                   {product.img_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -131,8 +132,8 @@ export function ProductDetailPage({ productId }: { productId: number }) {
                   )}
                 </button>
 
-                <div className="flex flex-1 flex-col gap-4">
-                  <h1 className="text-[24px] font-bold leading-tight text-ink">
+                <div className="flex min-w-0 flex-1 flex-col gap-4">
+                  <h1 className="break-words text-[24px] font-bold leading-tight text-ink">
                     {product.title}
                   </h1>
 
@@ -142,7 +143,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
                     </p>
                   ) : null}
 
-                  <span className="text-[20px] font-semibold text-ink">
+                  <span className="whitespace-nowrap text-[20px] font-semibold text-ink">
                     {formatPrice(product.price)}
                   </span>
 
@@ -160,7 +161,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
                       for (let i = 0; i < selectedQty; i += 1) addOne(product);
                       setSelectedQty(1);
                     }}
-                    className="w-fit rounded-full bg-leaf px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+                    className="w-fit whitespace-nowrap rounded-full bg-leaf px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
                   >
                     Səbətə əlavə et
                   </button>
@@ -168,7 +169,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
               </div>
             </div>
 
-            <CartSidebar className="lg:w-[375px] lg:shrink-0" />
+            <CartSidebar className={CART_COLUMN} />
           </div>
         </Container>
       </main>

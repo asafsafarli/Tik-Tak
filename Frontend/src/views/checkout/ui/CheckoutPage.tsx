@@ -43,7 +43,7 @@ export function CheckoutPage() {
   if (isDone) {
     return (
       <>
-        <SiteHeader variant="storefront" />
+        <SiteHeader variant="storefront" wide />
         <CheckoutSuccess />
       </>
     );
@@ -78,9 +78,9 @@ export function CheckoutPage() {
 
   return (
     <>
-      <SiteHeader variant="storefront" />
+      <SiteHeader variant="storefront" wide />
       <main className="flex-1 overflow-x-hidden bg-[#F4F4F6] py-8 sm:py-10">
-        <Container className="flex flex-col gap-5">
+        <Container wide className="flex flex-col gap-5">
           <nav aria-label="Breadcrumb" className="text-[20px] font-normal leading-none text-ink">
             <Link href="/" className="hover:opacity-70">
               Ana səhifə
@@ -90,7 +90,7 @@ export function CheckoutPage() {
           </nav>
 
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:gap-5">
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <h1 className="mb-3 text-[24px] font-bold leading-none text-ink">
                 Sifarişin tamamlanması
               </h1>

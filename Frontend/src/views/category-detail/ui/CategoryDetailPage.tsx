@@ -6,6 +6,7 @@ import { SiteHeader } from "@/widgets/site-header";
 import { CategoryPromo } from "@/widgets/category-promo";
 import { CategorySidebar, useVisibleCategories } from "@/widgets/category-sidebar";
 import { ProductGrid } from "@/widgets/product-grid";
+import { CART_COLUMN, STOREFRONT_COLUMNS } from "@/shared/config/layout";
 import { CartSidebar } from "@/widgets/cart-sidebar";
 import { Container } from "@/shared/ui/container";
 import { FALLBACK_PRODUCTS, getProducts, type Product } from "@/entities/product";
@@ -29,11 +30,7 @@ export function CategoryDetailPage({ categoryId }: { categoryId: number }) {
             {" / "}
             <span>{activeCategory?.name ?? "Kateqoriya"}</span>
           </nav>
-
-          {/* Üç sütun (menyu + məhsullar + səbət) yalnız xl-dən yan-yana düzülür,
-              Figma ölçüləri (338/375px) isə 2xl-də — dar ekranlarda məhsul
-              sütununa yer qalsın. lg-də səbət aşağı keçir. */}
-          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)_320px] 2xl:grid-cols-[338px_minmax(0,1fr)_375px]">
+          <div className={STOREFRONT_COLUMNS}>
             <div className="flex flex-col gap-5">
               <CategorySidebar
                 categories={visibleCategories}
@@ -49,7 +46,7 @@ export function CategoryDetailPage({ categoryId }: { categoryId: number }) {
               <CategoryProducts key={categoryId} categoryId={categoryId} />
             </div>
 
-            <CartSidebar className="lg:col-span-2 xl:col-span-1" />
+            <CartSidebar className={CART_COLUMN} />
           </div>
         </Container>
       </main>

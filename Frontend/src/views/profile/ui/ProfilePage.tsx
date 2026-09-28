@@ -29,7 +29,7 @@ export function ProfilePage() {
           <h1 className="text-[24px] font-bold leading-none text-ink">Hesabım</h1>
 
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
-            <AccountSidebar className="lg:w-[394px] lg:shrink-0" />
+            <AccountSidebar className="lg:w-[300px] lg:shrink-0 2xl:w-[394px]" />
             <div className="min-w-0 flex-1">
               {/* Profil gələndə forma yenidən mount olunur ki, ilkin dəyərləri götürsün. */}
               <ProfileForm key={profile?.id ?? "empty"} profile={profile} />

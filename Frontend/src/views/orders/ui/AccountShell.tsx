@@ -30,7 +30,7 @@ export function AccountShell({ children }: { children: (enabled: boolean) => Rea
           <h1 className="text-[24px] font-bold leading-none text-ink">Hesabım</h1>
 
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
-            <AccountSidebar className="lg:w-[394px] lg:shrink-0" />
+            <AccountSidebar className="lg:w-[300px] lg:shrink-0 2xl:w-[394px]" />
             <div className="min-w-0 flex-1 rounded-[10px] bg-white p-[30px]">
               {children(enabled)}
             </div>

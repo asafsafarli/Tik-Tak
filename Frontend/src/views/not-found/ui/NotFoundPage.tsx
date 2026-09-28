@@ -5,9 +5,9 @@ import { Container } from "@/shared/ui/container";
 export function NotFoundPage() {
   return (
     <>
-      <SiteHeader variant="storefront" />
+      <SiteHeader variant="storefront" wide />
       <main className="flex-1 overflow-x-hidden bg-[#F4F4F6] py-8 sm:py-10">
-        <Container className="flex flex-col">
+        <Container wide className="flex flex-col">
           <div className="flex flex-col items-center gap-8 rounded-[10px] bg-white px-6 py-16 text-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -16,7 +16,7 @@ export function NotFoundPage() {
               aria-hidden
               className="h-auto w-full max-w-[680px]"
             />
-            <p className="whitespace-nowrap text-[24px] font-normal leading-[131%] text-center text-[#1A1D28]">
+            <p className="text-[20px] font-normal sm:text-[24px] lg:whitespace-nowrap leading-[131%] text-center text-[#1A1D28]">
               Səhifə tapılmadı, deyəsən bir problem baş verib!
             </p>
             <Link

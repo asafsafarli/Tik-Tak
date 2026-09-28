@@ -88,7 +88,7 @@ function OrderInfo({ order }: { order: Order }) {
         {order.items.map((item) => (
           <li
             key={item.id}
-            className="grid grid-cols-[48px_1fr_auto_auto] items-center gap-4 border-b border-neutral-100 py-2 text-[13px] font-light leading-none text-ink sm:grid-cols-[48px_1fr_1fr_1fr] sm:gap-0"
+            className="grid grid-cols-[48px_minmax(0,1fr)_auto_auto] items-center gap-4 border-b border-neutral-100 py-2 text-[13px] font-light leading-none text-ink sm:grid-cols-[48px_minmax(0,2fr)_1fr_1fr] sm:gap-6"
           >
             <span className="flex size-12 items-center justify-center overflow-hidden">
               {item.product.img_url ? (
@@ -104,9 +104,9 @@ function OrderInfo({ order }: { order: Order }) {
                 </span>
               )}
             </span>
-            <span className="truncate sm:pl-[85px]">{item.product.title}</span>
-            <span className="sm:pl-[125px]">{item.quantity}</span>
-            <span className="sm:pl-[125px]">{formatPrice(item.total_price)}</span>
+            <span className="truncate">{item.product.title}</span>
+            <span>{item.quantity}</span>
+            <span className="whitespace-nowrap text-right sm:text-left">{formatPrice(item.total_price)}</span>
           </li>
         ))}
       </ul>
