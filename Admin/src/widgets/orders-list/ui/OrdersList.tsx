@@ -176,7 +176,7 @@ export function OrdersList() {
         <h1 className="text-[28px] leading-[100%] font-semibold text-[#2B3043]">Sifarişlər</h1>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 2xl:grid-cols-6">
         <StatCard label="Ümumi sifarişlər" icon={ShoppingCart} color="#3E7BFA" value={stats.total} />
         <StatCard
           label="Ümumi satış"
@@ -346,8 +346,7 @@ export function OrdersList() {
               {pageItems.map((row) => (
                 <TableRow key={row.order.id} className="border-neutral-100">
                   <TableCell
-                    className="max-w-[130px] truncate px-4 py-5 text-[15px] leading-[100%] font-light text-[#2B3043]"
-                    title={row.order.orderNumber}
+                    className="whitespace-nowrap px-4 py-5 text-[15px] leading-[100%] font-light text-[#2B3043]"
                   >
                     {row.order.orderNumber}
                   </TableCell>

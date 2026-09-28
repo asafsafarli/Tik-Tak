@@ -83,7 +83,7 @@ export function CampaignsList() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between border-b border-[#EDEEF2] pb-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#EDEEF2] pb-5">
         <h1 className="text-[28px] leading-[100%] font-semibold text-[#2B3043]">Kampaniyalar</h1>
         <Button
           onClick={openCreateDialog}
