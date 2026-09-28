@@ -14,7 +14,7 @@ export function LogoutButton() {
     <button
       type="button"
       onClick={handleLogout}
-      className="pt-[27px] pb-0 text-left text-[20px] leading-[100%] font-normal tracking-normal text-neutral-800 transition-colors hover:text-red-600"
+      className="shrink-0 whitespace-nowrap py-3 text-left text-[16px] leading-[100%] lg:pt-[27px] lg:pb-0 lg:text-[20px] font-normal tracking-normal text-neutral-800 transition-colors hover:text-red-600"
     >
       Çıxış
     </button>
