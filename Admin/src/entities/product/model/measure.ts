@@ -13,3 +13,17 @@ export const PRODUCT_MEASURE_LABEL: Record<ProductMeasure, string> = {
   packet: 'Paket',
   box: 'Qutu',
 }
+
+// Qısa forma — miqdar/qiymət yanında ("4 kq", "3.30 ₼/kq").
+export const PRODUCT_MEASURE_SHORT: Record<ProductMeasure, string> = {
+  kg: 'kq',
+  gr: 'qr',
+  litre: 'l',
+  ml: 'ml',
+  meter: 'm',
+  cm: 'sm',
+  mm: 'mm',
+  piece: 'əd',
+  packet: 'paket',
+  box: 'qutu',
+}
