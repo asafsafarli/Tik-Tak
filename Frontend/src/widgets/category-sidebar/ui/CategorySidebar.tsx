@@ -20,7 +20,7 @@ export function CategorySidebar({
       </h2>
       <nav
         aria-label="Kateqoriyalar"
-        className="w-full max-w-[338px] min-h-[348px] rounded-[10px] bg-white p-5"
+        className="w-full rounded-[10px] bg-white p-5 lg:min-h-[348px]"
       >
         <ul className="flex flex-col gap-1">
           {categories.map((category) => {

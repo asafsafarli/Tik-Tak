@@ -27,7 +27,7 @@ export function QuantityStepper({
       >
         <Minus className="size-3.5" strokeWidth={3} />
       </button>
-      <span className="text-[13px] font-medium leading-none text-ink">
+      <span className="whitespace-nowrap text-[13px] font-medium leading-none text-ink">
         {quantity} {unitLabel}
       </span>
       <button

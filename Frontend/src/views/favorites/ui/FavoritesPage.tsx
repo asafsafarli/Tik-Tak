@@ -31,9 +31,9 @@ export function FavoritesPage() {
           <h1 className="text-[24px] font-bold leading-none text-ink">Siyahılarım</h1>
 
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:gap-5">
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               {products.length > 0 ? (
-                <ProductGrid products={products} columns="wide" />
+                <ProductGrid products={products} />
               ) : (
                 <p className="text-[16px] text-muted">Siyahınız boşdur.</p>
               )}

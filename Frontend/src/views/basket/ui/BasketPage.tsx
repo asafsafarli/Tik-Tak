@@ -13,9 +13,9 @@ export function BasketPage() {
 
   return (
     <>
-      <SiteHeader variant="storefront" />
+      <SiteHeader variant="storefront" wide />
       <main className="flex-1 overflow-x-hidden bg-[#F4F4F6] py-8 sm:py-10">
-        <Container className="flex flex-col gap-5">
+        <Container wide className="flex flex-col gap-5">
           <nav aria-label="Breadcrumb" className="text-[20px] font-normal leading-none text-ink">
             <Link href="/" className="hover:opacity-70">
               Ana səhifə
@@ -28,7 +28,7 @@ export function BasketPage() {
             <BasketEmptyState />
           ) : (
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:gap-5">
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <div className="mb-3 flex items-center justify-between">
                   <h1 className="text-[24px] font-bold leading-none text-ink">Səbətim</h1>
                   <button
@@ -40,10 +40,10 @@ export function BasketPage() {
                   </button>
                 </div>
 
-                <ul className="flex flex-col divide-y divide-neutral-100 rounded-[10px] bg-white px-5">
+                <ul className="flex flex-col divide-y divide-neutral-100 rounded-[10px] bg-white px-4 sm:px-5">
                   {lines.map((line) => (
-                    <li key={line.product.id} className="flex items-center gap-4 py-5">
-                      <span className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+                    <li key={line.product.id} className="flex items-center gap-3 py-4 sm:gap-4 sm:py-5">
+                      <span className="flex size-14 shrink-0 items-center sm:size-20 justify-center overflow-hidden rounded-lg">
                         {line.product.img_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
@@ -59,7 +59,7 @@ export function BasketPage() {
                       </span>
 
                       <div className="flex min-w-0 flex-1 flex-col gap-1">
-                        <span className="truncate text-[16px] font-bold leading-none text-ink">
+                        <span className="line-clamp-2 break-words text-[15px] font-bold leading-tight text-ink sm:text-[16px]">
                           {line.product.title}
                         </span>
                         <span className="text-[14px] font-normal leading-none text-muted">
@@ -67,12 +67,12 @@ export function BasketPage() {
                         </span>
                       </div>
 
-                      <div className="flex shrink-0 items-center gap-3 rounded-full bg-[#EEF7E8] p-1.5">
+                      <div className="flex shrink-0 items-center gap-2 rounded-full bg-[#EEF7E8] p-1 sm:gap-3 sm:p-1.5">
                         <button
                           type="button"
                           onClick={() => removeAll(line.product.id)}
                           aria-label="Səbətdən çıxar"
-                          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-leaf text-white transition-opacity hover:opacity-90"
+                          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-leaf sm:size-9 text-white transition-opacity hover:opacity-90"
                         >
                           <Trash2 className="size-4" />
                         </button>
@@ -83,7 +83,7 @@ export function BasketPage() {
                           type="button"
                           onClick={() => addOne(line.product)}
                           aria-label="Artır"
-                          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-leaf text-white transition-opacity hover:opacity-90"
+                          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-leaf sm:size-9 text-white transition-opacity hover:opacity-90"
                         >
                           <Plus className="size-4" />
                         </button>
@@ -95,19 +95,19 @@ export function BasketPage() {
 
               <aside className="flex w-full flex-col gap-3 lg:w-[544px] lg:shrink-0">
                 <h2 className="text-[24px] font-bold leading-none text-ink">Yekun məbləğ</h2>
-                <div className="flex h-[427px] w-full flex-col rounded-[10px] bg-white px-[30px] pt-[30px] pb-[50px]">
+                <div className="flex w-full flex-col rounded-[10px] bg-white px-5 pt-6 pb-6 sm:px-[30px] sm:pt-[30px] lg:h-[427px] lg:pb-[50px]">
                   <div className="flex flex-col gap-3 text-[16px] leading-none">
                     <div className="flex items-center justify-between text-muted">
                       <span>Ümumi</span>
                       <span className="font-bold text-ink">{formatPrice(total)}</span>
                     </div>
                     <div className="flex items-center justify-between text-muted">
-                      <span>Çatırılma</span>
+                      <span>Çatdırılma</span>
                       <span className="font-bold text-ink">Pulsuz</span>
                     </div>
                   </div>
 
-                  <div className="mt-auto flex flex-col gap-6">
+                  <div className="mt-8 flex flex-col gap-6 lg:mt-auto">
                     <div className="flex items-center justify-between text-[20px] font-bold leading-none text-ink">
                       <span>Yekun məbləğ</span>
                       <span>{formatPrice(total)}</span>

@@ -31,12 +31,12 @@ export function CategoryPage() {
 
   return (
     <>
-      <SiteHeader variant="storefront" />
+      <SiteHeader variant="storefront" wide />
       {/* overflow-x-hidden: promo kartındakı şəkil Figma-dakı kimi kartın
           kənarından daşır (`OrderPromo`) — bu, kiçik ekranlarda səhifəni üfüqi
           sürüşdürməsin deyə lazımdır, kartın öz görünüşünə təsir etmir. */}
       <main className="flex-1 overflow-x-hidden bg-[#F4F4F6] py-8 sm:py-10">
-        <Container>
+        <Container wide>
           <h1 className="sr-only">Kateqoriyalar</h1>
           <div className="flex flex-col gap-5 lg:flex-row lg:gap-6">
             <OrderPromo className="lg:shrink-0" />

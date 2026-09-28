@@ -6,6 +6,7 @@ import { SiteHeader } from "@/widgets/site-header";
 import { CategoryPromo } from "@/widgets/category-promo";
 import { CategorySidebar, useVisibleCategories } from "@/widgets/category-sidebar";
 import { ProductGrid } from "@/widgets/product-grid";
+import { CART_COLUMN, STOREFRONT_COLUMNS } from "@/shared/config/layout";
 import { CartSidebar } from "@/widgets/cart-sidebar";
 import { Container } from "@/shared/ui/container";
 import { FALLBACK_PRODUCTS, getProducts, type Product } from "@/entities/product";
@@ -29,24 +30,23 @@ export function CategoryDetailPage({ categoryId }: { categoryId: number }) {
             {" / "}
             <span>{activeCategory?.name ?? "Kateqoriya"}</span>
           </nav>
-
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:gap-5">
-            <div className="flex flex-col gap-5 lg:w-[338px] lg:shrink-0">
+          <div className={STOREFRONT_COLUMNS}>
+            <div className="flex flex-col gap-5">
               <CategorySidebar
                 categories={visibleCategories}
                 activeCategoryId={categoryId}
               />
-              <CategoryPromo className="lg:shrink-0" />
+              <CategoryPromo />
             </div>
 
-            <div className="flex-1">
+            <div className="min-w-0">
               <h1 className="sr-only">{activeCategory?.name ?? "Kateqoriya"}</h1>
               {/* `key`: kateqoriya dəyişəndə (sidebar-dan başqasına keçid) köhnə
                   kateqoriyanın məhsulları qalmasın deyə komponent təzədən quraşdırılır. */}
               <CategoryProducts key={categoryId} categoryId={categoryId} />
             </div>
 
-            <CartSidebar className="lg:w-[375px] lg:shrink-0" />
+            <CartSidebar className={CART_COLUMN} />
           </div>
         </Container>
       </main>
