@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ChevronDown, XIcon } from 'lucide-react'
 import type { Order, OrderStatus } from '@/entities/order'
 import { ORDER_STATUSES, ORDER_STATUS_META, useUpdateOrderStatus } from '@/entities/order'
+import { PRODUCT_MEASURE_SHORT, type ProductMeasure } from '@/entities/product'
 import { ApiError } from '@/shared/api/client'
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/shared/ui/dialog'
 
@@ -55,14 +56,14 @@ export function OrderDetailDialog({ open, onOpenChange, order }: OrderDetailDial
         aria-describedby={undefined}
         className="flex max-h-[calc(100vh-4rem)] w-[calc(100%-2rem)] max-w-[720px] flex-col gap-0 overflow-hidden rounded-[16px] bg-white p-0 shadow-xl sm:max-w-[720px]"
       >
-        <div className="flex shrink-0 items-center gap-5 border-b border-[#EDEEF2] px-6 py-4">
+        <div className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-3 border-b border-[#EDEEF2] px-4 py-4 sm:px-6">
           <Avatar name={order.user.full_name} src={order.user.img_url} />
 
-          <DialogTitle className="text-[19px] leading-[100%] font-semibold text-[#2B3043]">
+          <DialogTitle className="whitespace-nowrap text-[16px] leading-[100%] font-semibold text-[#2B3043] sm:text-[19px]">
             {order.orderNumber}
           </DialogTitle>
 
-          <div className="ml-auto flex flex-col gap-1">
+          <div className="order-last flex flex-col gap-1 sm:order-none sm:ml-auto">
             <span className="text-[12px] leading-[100%] text-neutral-400">Status</span>
             <div className="relative">
               <select
@@ -82,14 +83,14 @@ export function OrderDetailDialog({ open, onOpenChange, order }: OrderDetailDial
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="order-last flex flex-col gap-1 sm:order-none">
             <span className="text-[12px] leading-[100%] text-neutral-400">Ümumi məbləğ</span>
             <span className="text-[17px] leading-[100%] font-bold text-[#EF4444]">
               {Number(order.total).toFixed(2)} {MANAT}
             </span>
           </div>
 
-          <DialogClose className="self-start text-[#1A1D28] transition-opacity hover:opacity-60">
+          <DialogClose className="ml-auto self-center text-[#1A1D28] transition-opacity hover:opacity-60 sm:ml-0 sm:self-start">
             <XIcon className="size-4" />
             <span className="sr-only">Bağla</span>
           </DialogClose>
@@ -134,7 +135,7 @@ export function OrderDetailDialog({ open, onOpenChange, order }: OrderDetailDial
                       {item.product.title}
                     </p>
                     <p className="mt-0.5 truncate text-xs text-neutral-400">
-                      {[item.product.category?.name, `${item.quantity} ${item.product.type}`]
+                      {[item.product.category?.name, `${item.quantity} ${measureShort(item.product.type)}`]
                         .filter(Boolean)
                         .join(' • ')}
                     </p>
@@ -145,7 +146,7 @@ export function OrderDetailDialog({ open, onOpenChange, order }: OrderDetailDial
                       {Number(item.total_price).toFixed(2)} {MANAT}
                     </p>
                     <p className="mt-0.5 text-xs text-neutral-400">
-                      {Number(item.product.price).toFixed(2)} {MANAT}/{item.product.type}
+                      {Number(item.product.price).toFixed(2)} {MANAT}/{measureShort(item.product.type)}
                     </p>
                   </div>
                 </li>
@@ -183,4 +184,8 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       <dd className="text-[#2B3043]">{value}</dd>
     </div>
   )
+}
+
+function measureShort(type: string) {
+  return PRODUCT_MEASURE_SHORT[type as ProductMeasure] ?? type
 }
