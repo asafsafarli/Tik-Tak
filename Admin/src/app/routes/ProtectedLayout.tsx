@@ -24,9 +24,9 @@ export function ProtectedLayout() {
     <SearchProvider>
       <div className="flex min-h-screen w-full flex-col bg-[#F4F4F9]">
         <Topbar />
-        <div className="mx-auto flex w-full max-w-[1560px] flex-1 flex-col gap-5 px-4 pt-[104px] pb-10 lg:flex-row lg:items-start 2xl:px-0">
+        <div className="mx-auto flex w-full max-w-[1560px] flex-1 flex-col gap-5 px-4 pt-5 pb-10 lg:flex-row lg:items-start 2xl:px-0">
           <Sidebar />
-          <main className="flex-1 rounded-[10px] bg-white p-10 pt-[29px] shadow-sm lg:min-h-[490px]">
+          <main className="min-w-0 flex-1 rounded-[10px] bg-white p-5 shadow-sm sm:p-10 sm:pt-[29px] lg:min-h-[490px] lg:px-8 2xl:px-10">
             <Suspense fallback={<p className="text-sm text-neutral-500">Yüklənir...</p>}>
               <Outlet />
             </Suspense>
