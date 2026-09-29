@@ -3,6 +3,7 @@ import { AlertDialog as AlertDialogPrimitive } from 'radix-ui'
 import type { Campaign } from '@/entities/campaign'
 import { useRemoveCampaign } from '@/entities/campaign'
 import { ApiError } from '@/shared/api/client'
+import { useToast } from '@/shared/ui/toast'
 import deleteIllustration from '@/shared/assets/delete.webp'
 
 interface DeleteCampaignDialogProps {
@@ -13,6 +14,7 @@ interface DeleteCampaignDialogProps {
 
 export function DeleteCampaignDialog({ open, onOpenChange, campaign }: DeleteCampaignDialogProps) {
   const removeCampaign = useRemoveCampaign()
+  const toast = useToast()
   const [error, setError] = useState<string | null>(null)
 
   async function handleConfirm() {
@@ -20,9 +22,12 @@ export function DeleteCampaignDialog({ open, onOpenChange, campaign }: DeleteCam
     setError(null)
     try {
       await removeCampaign.mutateAsync(campaign.id)
+      toast({ title: 'Kampaniya silindi', description: `“${campaign.title}”` })
       onOpenChange(false)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Silinmə uğursuz oldu')
+      const message = err instanceof ApiError ? err.message : 'Silinmə uğursuz oldu'
+      setError(message)
+      toast({ title: 'Silinmədi', description: message, variant: 'error' })
     }
   }
 

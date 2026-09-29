@@ -4,6 +4,7 @@ import type { Order, OrderStatus } from '@/entities/order'
 import { ORDER_STATUSES, ORDER_STATUS_META, useUpdateOrderStatus } from '@/entities/order'
 import { PRODUCT_MEASURE_SHORT, type ProductMeasure } from '@/entities/product'
 import { ApiError } from '@/shared/api/client'
+import { useToast } from '@/shared/ui/toast'
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/shared/ui/dialog'
 
 const MANAT = '₼'
@@ -21,6 +22,7 @@ interface OrderDetailDialogProps {
 
 export function OrderDetailDialog({ open, onOpenChange, order }: OrderDetailDialogProps) {
   const updateStatus = useUpdateOrderStatus()
+  const toast = useToast()
   const [status, setStatus] = useState<OrderStatus>('PENDING')
   const [error, setError] = useState<string | null>(null)
 
@@ -43,9 +45,15 @@ export function OrderDetailDialog({ open, onOpenChange, order }: OrderDetailDial
     setError(null)
     try {
       await updateStatus.mutateAsync({ id: currentOrder.id, status: next })
+      toast({
+        title: 'Status yeniləndi',
+        description: `${currentOrder.orderNumber}: ${ORDER_STATUS_META[currentOrder.status].label} → ${ORDER_STATUS_META[next].label}`,
+      })
     } catch (err) {
       setStatus(currentOrder.status)
-      setError(err instanceof ApiError ? err.message : 'Status yenilənmədi')
+      const message = err instanceof ApiError ? err.message : 'Status yenilənmədi'
+      setError(message)
+      toast({ title: 'Status yenilənmədi', description: message, variant: 'error' })
     }
   }
 
