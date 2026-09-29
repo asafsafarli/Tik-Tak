@@ -16,7 +16,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  ACTION_LABEL,
+  COL,
 } from '@/shared/ui/table'
+import { StatsLoader } from '@/shared/ui/stats-loader'
 
 const PAGE_SIZE = 5
 const MANAT = '₼'
@@ -97,12 +100,12 @@ export function ProductsList() {
       : `${startIndex + 1}-${Math.min(startIndex + PAGE_SIZE, filtered.length)} / ${filtered.length} nəticə`
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#EDEEF2] pb-5">
-        <h1 className="text-[28px] leading-[100%] font-semibold text-[#2B3043]">Məhsullar</h1>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#EDEEF2] pb-4">
+        <h1 className="text-[20px] leading-[100%] font-semibold text-[#2B3043] sm:text-[22px]">Məhsullar</h1>
         <Button
           onClick={openCreateDialog}
-          className="h-[40px] gap-2 rounded-[10px] px-4 text-[15px] font-bold text-white hover:opacity-90"
+          className="h-9 gap-1.5 rounded-[8px] px-3.5 text-[14px] font-semibold text-white hover:opacity-90"
           style={{ backgroundColor: '#92D871' }}
         >
           <Plus className="size-4" />
@@ -110,7 +113,7 @@ export function ProductsList() {
         </Button>
       </div>
 
-      {isLoading && <p className="text-sm text-neutral-500">Yüklənir...</p>}
+      {isLoading && <StatsLoader />}
       {isError && <p className="text-sm text-red-600">Məhsullar yüklənə bilmədi.</p>}
 
       {!isLoading && !isError && (
@@ -118,20 +121,20 @@ export function ProductsList() {
           <Table>
             <TableHeader>
               <TableRow className="border-none bg-[#F7F7FA] hover:bg-[#F7F7FA]">
-                <TableHead className="rounded-l-lg px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className={cn("rounded-l-lg px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500", COL.sm)}>
                   Sıra
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className="px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500">
                   Şəkil
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className="px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500">
                   <HeadWithSearch
                     label="Ad"
                     value={columnFilters.name ?? ''}
                     onChange={(next) => setColumnFilters((prev) => ({ ...prev, name: next }))}
                   />
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className={cn("px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500", COL.xl)}>
                   <HeadWithSearch
                     label="Açıqlama"
                     value={columnFilters.description ?? ''}
@@ -140,35 +143,35 @@ export function ProductsList() {
                     }
                   />
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className="px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500">
                   Qiymət
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className={cn("px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500", COL.lg)}>
                   <HeadWithSearch
                     label="Kateqoriya"
                     value={columnFilters.category ?? ''}
                     onChange={(next) => setColumnFilters((prev) => ({ ...prev, category: next }))}
                   />
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className={cn("px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500", COL.md)}>
                   <HeadWithSearch
                     label="Növ"
                     value={columnFilters.type ?? ''}
                     onChange={(next) => setColumnFilters((prev) => ({ ...prev, type: next }))}
                   />
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className={cn("px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500", COL.xl)}>
                   Tarix
                 </TableHead>
-                <TableHead className="rounded-r-lg px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
-                  Əməliyyat
+                <TableHead className="rounded-r-lg px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500">
+                  <span className={ACTION_LABEL}>Əməliyyat</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.length === 0 && (
                 <TableRow className="border-transparent hover:bg-transparent">
-                  <TableCell colSpan={9} className="px-4 py-10 text-center text-sm text-neutral-500">
+                  <TableCell colSpan={9} className="px-3 py-10 text-center text-sm text-neutral-500">
                     Heç bir məhsul tapılmadı.
                   </TableCell>
                 </TableRow>
@@ -176,59 +179,61 @@ export function ProductsList() {
 
               {pageItems.map((product, index) => (
                 <TableRow key={product.id} className="border-neutral-100">
-                  <TableCell className="px-4 py-4 text-[15px] leading-[100%] font-light text-[#2B3043]">
+                  <TableCell className={cn("px-3 py-2.5 text-[14px] leading-[100%] font-light text-[#2B3043]", COL.sm)}>
                     {startIndex + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-4">
+                  <TableCell className="px-3 py-2">
                     {product.img_url ? (
                       <img
                         src={product.img_url}
                         alt=""
                         loading="lazy"
                         decoding="async"
-                        className="size-11 rounded-[8px] object-cover"
+                        className="size-9 rounded-[8px] object-cover"
                       />
                     ) : (
-                      <div className="size-11 rounded-[8px] bg-neutral-100" aria-hidden />
+                      <div className="size-9 rounded-[8px] bg-neutral-100" aria-hidden />
                     )}
                   </TableCell>
-                  <TableCell className="max-w-[150px] truncate px-4 py-4 text-[15px] leading-[100%] font-medium text-[#2B3043]">
+                  <TableCell className="max-w-[150px] truncate px-3 py-2.5 text-[14px] leading-[100%] font-medium text-[#2B3043]">
                     {product.title}
                   </TableCell>
-                  <TableCell className="w-[200px] px-4 py-4 text-[15px] leading-[1.4] font-light whitespace-normal text-[#2B3043]">
+                  <TableCell className={cn("w-[200px] px-3 py-2.5 text-[14px] leading-[1.4] font-light whitespace-normal text-[#2B3043]", COL.xl)}>
                     <span className="line-clamp-2">{product.description}</span>
                   </TableCell>
-                  <TableCell className="px-4 py-4 text-[15px] leading-[100%] font-semibold whitespace-nowrap text-[#2B3043]">
+                  <TableCell className="px-3 py-2.5 text-[14px] leading-[100%] font-semibold whitespace-nowrap text-[#2B3043]">
                     {Number(product.price).toFixed(2)} {MANAT}
                   </TableCell>
-                  <TableCell className="max-w-[140px] px-4 py-4 text-[15px] leading-[1.4] font-light whitespace-normal text-[#2B3043]">
+                  <TableCell className={cn("max-w-[140px] px-3 py-2.5 text-[14px] leading-[1.4] font-light whitespace-normal text-[#2B3043]", COL.lg)}>
                     {product.category?.name}
                   </TableCell>
-                  <TableCell className="px-4 py-4">
+                  <TableCell className={cn("px-3 py-2", COL.md)}>
                     <span className="inline-flex rounded-[6px] bg-[#F1ECFB] px-2.5 py-1 text-[13px] font-medium whitespace-nowrap text-[#8B5CF6]">
                       {PRODUCT_MEASURE_LABEL[product.type]}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-4 text-[15px] leading-[100%] font-light whitespace-nowrap text-[#2B3043]">
+                  <TableCell className={cn("px-3 py-2.5 text-[14px] leading-[100%] font-light whitespace-nowrap text-[#2B3043]", COL.xl)}>
                     {formatDate(product.created_at)}
                   </TableCell>
-                  <TableCell className="px-4 py-4 whitespace-nowrap">
+                  <TableCell className="px-3 py-2 whitespace-nowrap">
                     <div className="flex items-center gap-4">
                       <button
+                        aria-label="Düzəlt"
                         type="button"
                         onClick={() => openEditDialog(product)}
-                        className="inline-flex items-center gap-1.5 text-[15px] leading-[100%] font-light text-[#2B3043] hover:text-neutral-900"
+                        className="inline-flex items-center gap-1.5 text-[14px] leading-[100%] font-light text-[#2B3043] hover:text-neutral-900"
                       >
                         <Pencil className="size-4 text-[#9AA0AC]" />
-                        Düzəlt
+                        <span className={ACTION_LABEL}>Düzəlt</span>
                       </button>
                       <button
+                        aria-label="Sil"
                         type="button"
                         onClick={() => setDeleteProduct(product)}
-                        className="inline-flex items-center gap-1.5 text-[15px] leading-[100%] font-light text-[#EF4444] hover:opacity-80"
+                        className="inline-flex items-center gap-1.5 text-[14px] leading-[100%] font-light text-[#EF4444] hover:opacity-80"
                       >
                         <Trash2 className="size-4" />
-                        Sil
+                        <span className={ACTION_LABEL}>Sil</span>
                       </button>
                     </div>
                   </TableCell>
@@ -239,7 +244,7 @@ export function ProductsList() {
                   key={`filler-${index}`}
                   className="border-transparent hover:bg-transparent"
                 >
-                  <TableCell colSpan={9} aria-hidden className="px-4 py-6 text-[15px] leading-[100%]">
+                  <TableCell colSpan={9} aria-hidden className="h-[53px] p-0">
                     &nbsp;
                   </TableCell>
                 </TableRow>
@@ -248,7 +253,7 @@ export function ProductsList() {
           </Table>
 
           <div className="flex items-center justify-end gap-4 pt-1 text-sm text-neutral-500">
-            <span>{rangeLabel}</span>
+            <span className="hidden whitespace-nowrap sm:inline">{rangeLabel}</span>
             <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
           </div>
         </>
@@ -371,7 +376,7 @@ function PaginationButton({
     <button
       type="button"
       className={cn(
-        'flex h-8 min-w-8 items-center justify-center rounded-lg px-2 text-sm font-light transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+        'flex h-7 min-w-7 items-center justify-center rounded-lg px-1.5 text-[13px] sm:h-8 sm:min-w-8 sm:px-2 sm:text-sm font-light transition-colors disabled:cursor-not-allowed disabled:opacity-40',
         active ? 'font-normal text-white' : 'text-[#2B3043] hover:bg-neutral-100',
         className,
       )}

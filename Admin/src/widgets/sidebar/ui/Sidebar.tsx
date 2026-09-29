@@ -2,21 +2,27 @@ import { NavLink } from 'react-router-dom'
 import { LogoutButton } from '@/features/auth/logout'
 import { navItems } from '../model/nav-items'
 
+// lg-dən aşağı: 3×2 (telefon) və ya 6 sütunlu (planşet) menyu — scroll yoxdur;
+// lg və yuxarı: ikonlu şaquli menyu.
 export function Sidebar() {
   return (
-    <aside className="w-full shrink-0 rounded-[10px] bg-white px-4 py-2 shadow-sm lg:min-h-[482px] lg:w-[280px] lg:px-8 lg:pt-[42px] lg:pb-[88px] 2xl:w-[390px]">
-      <nav className="flex gap-6 overflow-x-auto lg:flex-col lg:gap-0 lg:overflow-visible">
-        {navItems.map((item, index) => (
+    <aside className="w-full shrink-0 rounded-[10px] bg-white p-1.5 shadow-sm lg:w-[220px] lg:p-3 2xl:w-[250px]">
+      <nav className="grid grid-cols-3 gap-1 sm:grid-cols-6 lg:flex lg:flex-col">
+        {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
-            key={item.to}
-            to={item.to}
+            key={to}
+            to={to}
+            title={label}
             className={({ isActive }) =>
-              `shrink-0 whitespace-nowrap py-3 text-[16px] leading-[100%] font-normal tracking-normal transition-colors lg:border-b lg:border-neutral-100 lg:pb-[27px] lg:text-[20px] ${
-                index === 0 ? 'lg:pt-0' : 'lg:pt-[27px]'
-              } ${isActive ? 'text-[#6FCF54]' : 'text-neutral-800 hover:text-neutral-950'}`
+              `flex items-center justify-center gap-1.5 rounded-[8px] px-1 py-2 text-[13px] leading-[100%] font-normal transition-colors sm:gap-2 lg:justify-start lg:px-3 lg:py-2.5 lg:text-[15px] ${
+                isActive
+                  ? 'bg-[#EEF8E8] font-medium text-[#4FA83A]'
+                  : 'text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950'
+              }`
             }
           >
-            {item.label}
+            <Icon className="size-[18px] shrink-0" strokeWidth={1.75} />
+            <span className="max-w-full truncate">{label}</span>
           </NavLink>
         ))}
         <LogoutButton />

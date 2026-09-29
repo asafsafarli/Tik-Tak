@@ -22,7 +22,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  ACTION_LABEL,
+  COL,
 } from '@/shared/ui/table'
+import { StatsLoader } from '@/shared/ui/stats-loader'
 
 const PAGE_SIZE = 5
 
@@ -118,12 +121,12 @@ export function UsersList() {
       : `${startIndex + 1}-${Math.min(startIndex + PAGE_SIZE, sorted.length)} / ${sorted.length} nəticə`
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="border-b border-[#EDEEF2] pb-5">
-        <h1 className="text-[28px] leading-[100%] font-semibold text-[#2B3043]">İstifadəçilər</h1>
+    <div className="flex flex-col gap-4">
+      <div className="border-b border-[#EDEEF2] pb-4">
+        <h1 className="text-[20px] leading-[100%] font-semibold text-[#2B3043] sm:text-[22px]">İstifadəçilər</h1>
       </div>
 
-      {isLoading && <p className="text-sm text-neutral-500">Yüklənir...</p>}
+      {isLoading && <StatsLoader />}
       {isError && <p className="text-sm text-red-600">İstifadəçilər yüklənə bilmədi.</p>}
 
       {!isLoading && !isError && (
@@ -131,13 +134,13 @@ export function UsersList() {
           <Table>
             <TableHeader>
               <TableRow className="border-none bg-[#F7F7FA] hover:bg-[#F7F7FA]">
-                <TableHead className="rounded-l-lg px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className={cn("rounded-l-lg px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500", COL.sm)}>
                   Sıra
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className="px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500">
                   Avatar
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className="px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500">
                   <div className="flex items-center gap-1.5">
                     <span>Ad Soyad</span>
                     <SortIcon active={sort?.key === 'fullName'} onClick={() => toggleSort('fullName')} />
@@ -147,7 +150,7 @@ export function UsersList() {
                     />
                   </div>
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className={cn("px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500", COL.md)}>
                   <div className="flex items-center gap-1.5">
                     <span>Telefon</span>
                     <SortIcon active={sort?.key === 'phone'} onClick={() => toggleSort('phone')} />
@@ -157,7 +160,7 @@ export function UsersList() {
                     />
                   </div>
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className={cn("px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500", COL.lg)}>
                   <div className="flex items-center gap-1.5">
                     <span>Ünvan</span>
                     <TextFilter
@@ -166,7 +169,7 @@ export function UsersList() {
                     />
                   </div>
                 </TableHead>
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className={cn("px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500", COL.sm)}>
                   <div className="flex items-center gap-1.5">
                     <span>Rol</span>
                     <Popover.Root>
@@ -230,15 +233,15 @@ export function UsersList() {
                     </Popover.Root>
                   </div>
                 </TableHead>
-                <TableHead className="rounded-r-lg px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
-                  Əməliyyat
+                <TableHead className="rounded-r-lg px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500">
+                  <span className={ACTION_LABEL}>Əməliyyat</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {sorted.length === 0 && (
                 <TableRow className="border-transparent hover:bg-transparent">
-                  <TableCell colSpan={7} className="px-4 py-10 text-center text-sm text-neutral-500">
+                  <TableCell colSpan={7} className="px-3 py-10 text-center text-sm text-neutral-500">
                     Heç bir istifadəçi tapılmadı.
                   </TableCell>
                 </TableRow>
@@ -246,42 +249,43 @@ export function UsersList() {
 
               {pageItems.map((user, index) => (
                 <TableRow key={user.id} className="border-neutral-100">
-                  <TableCell className="px-4 py-4 text-[15px] leading-[100%] font-light text-[#2B3043]">
+                  <TableCell className={cn("px-3 py-2.5 text-[14px] leading-[100%] font-light text-[#2B3043]", COL.sm)}>
                     {startIndex + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-4">
+                  <TableCell className="px-3 py-2">
                     <Avatar name={user.full_name} src={user.img_url} />
                   </TableCell>
-                  <TableCell className="max-w-[200px] truncate px-4 py-4 text-[15px] leading-[100%] font-light text-[#2B3043]">
+                  <TableCell className="max-w-[200px] truncate px-3 py-2.5 text-[14px] leading-[100%] font-light text-[#2B3043]">
                     {user.full_name}
                   </TableCell>
-                  <TableCell className="px-4 py-4 text-[15px] leading-[100%] font-light whitespace-nowrap text-[#2B3043]">
+                  <TableCell className={cn("px-3 py-2.5 text-[14px] leading-[100%] font-light whitespace-nowrap text-[#2B3043]", COL.md)}>
                     <span className="inline-flex items-center gap-1.5">
                       <Phone className="size-3.5 text-[#9AA0AC]" />
                       {user.phone}
                     </span>
                   </TableCell>
-                  <TableCell className="max-w-[200px] truncate px-4 py-4 text-[15px] leading-[100%] font-light text-[#2B3043]">
+                  <TableCell className={cn("max-w-[200px] truncate px-3 py-2.5 text-[14px] leading-[100%] font-light text-[#2B3043]", COL.lg)}>
                     {user.address?.trim() ? (
                       user.address
                     ) : (
                       <span className="text-neutral-400">Qeyd olunmayıb</span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-4">
+                  <TableCell className={cn("px-3 py-2", COL.sm)}>
                     <span className="inline-flex items-center gap-1.5 rounded-[6px] border border-[#6FCF54] px-2.5 py-1 text-[13px] font-medium whitespace-nowrap text-[#5AB85A]">
                       <LayoutGrid className="size-3.5" />
                       {user.role}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-4">
+                  <TableCell className="px-3 py-2">
                     <button
+                        aria-label="Göstər"
                       type="button"
                       onClick={() => setDetailUser(user)}
-                      className="inline-flex items-center gap-1.5 text-[15px] leading-[100%] font-light text-[#2B3043] hover:text-neutral-900"
+                      className="inline-flex items-center gap-1.5 text-[14px] leading-[100%] font-light text-[#2B3043] hover:text-neutral-900"
                     >
                       <Eye className="size-4 text-[#9AA0AC]" />
-                      Göstər
+                      <span className={ACTION_LABEL}>Göstər</span>
                     </button>
                   </TableCell>
                 </TableRow>
@@ -292,7 +296,7 @@ export function UsersList() {
                   key={`filler-${index}`}
                   className="border-transparent hover:bg-transparent"
                 >
-                  <TableCell colSpan={7} aria-hidden className="px-4 py-6 text-[15px] leading-[100%]">
+                  <TableCell colSpan={7} aria-hidden className="h-[53px] p-0">
                     &nbsp;
                   </TableCell>
                 </TableRow>
@@ -301,7 +305,7 @@ export function UsersList() {
           </Table>
 
           <div className="flex items-center justify-end gap-4 pt-1 text-sm text-neutral-500">
-            <span>{rangeLabel}</span>
+            <span className="hidden whitespace-nowrap sm:inline">{rangeLabel}</span>
             <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
           </div>
         </>
@@ -445,7 +449,7 @@ function PaginationButton({
     <button
       type="button"
       className={cn(
-        'flex h-8 min-w-8 items-center justify-center rounded-lg px-2 text-sm font-light transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+        'flex h-7 min-w-7 items-center justify-center rounded-lg px-1.5 text-[13px] sm:h-8 sm:min-w-8 sm:px-2 sm:text-sm font-light transition-colors disabled:cursor-not-allowed disabled:opacity-40',
         active ? 'font-normal text-white' : 'text-[#2B3043] hover:bg-neutral-100',
         className,
       )}
