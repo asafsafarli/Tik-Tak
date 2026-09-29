@@ -3,6 +3,7 @@ import { XIcon } from 'lucide-react'
 import type { Campaign } from '@/entities/campaign'
 import { useCreateCampaign, useUpdateCampaign } from '@/entities/campaign'
 import { ApiError } from '@/shared/api/client'
+import { useToast } from '@/shared/ui/toast'
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/shared/ui/dialog'
 
 interface CampaignFormDialogProps {
@@ -18,6 +19,7 @@ const labelClass = 'text-[22px] font-normal leading-[100%] text-[#2B3043]'
 
 export function CampaignFormDialog({ open, onOpenChange, campaign }: CampaignFormDialogProps) {
   const isEditMode = campaign !== undefined
+  const toast = useToast()
   const createCampaign = useCreateCampaign()
   const updateCampaign = useUpdateCampaign()
 
@@ -44,12 +46,16 @@ export function CampaignFormDialog({ open, onOpenChange, campaign }: CampaignFor
     try {
       if (isEditMode) {
         await updateCampaign.mutateAsync({ id: campaign.id, input })
+        toast({ title: 'Kampaniya yeniləndi', description: `“${input.title}”` })
       } else {
         await createCampaign.mutateAsync(input)
+        toast({ title: 'Kampaniya yaradıldı', description: `“${input.title}”` })
       }
       onOpenChange(false)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Əməliyyat uğursuz oldu')
+      const message = err instanceof ApiError ? err.message : 'Əməliyyat uğursuz oldu'
+      setError(message)
+      toast({ title: 'Yadda saxlanmadı', description: message, variant: 'error' })
     }
   }
 

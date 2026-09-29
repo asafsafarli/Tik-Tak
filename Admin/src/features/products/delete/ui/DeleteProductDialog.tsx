@@ -3,6 +3,7 @@ import { AlertDialog as AlertDialogPrimitive } from 'radix-ui'
 import type { Product } from '@/entities/product'
 import { useRemoveProduct } from '@/entities/product'
 import { ApiError } from '@/shared/api/client'
+import { useToast } from '@/shared/ui/toast'
 import deleteIllustration from '@/shared/assets/delete.webp'
 
 interface DeleteProductDialogProps {
@@ -13,6 +14,7 @@ interface DeleteProductDialogProps {
 
 export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProductDialogProps) {
   const removeProduct = useRemoveProduct()
+  const toast = useToast()
   const [error, setError] = useState<string | null>(null)
 
   async function handleConfirm() {
@@ -20,9 +22,12 @@ export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProdu
     setError(null)
     try {
       await removeProduct.mutateAsync(product.id)
+      toast({ title: 'Məhsul silindi', description: `“${product.title}”` })
       onOpenChange(false)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Silinmə uğursuz oldu')
+      const message = err instanceof ApiError ? err.message : 'Silinmə uğursuz oldu'
+      setError(message)
+      toast({ title: 'Silinmədi', description: message, variant: 'error' })
     }
   }
 

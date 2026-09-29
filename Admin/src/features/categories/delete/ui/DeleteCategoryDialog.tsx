@@ -3,6 +3,7 @@ import { AlertDialog as AlertDialogPrimitive } from 'radix-ui'
 import type { Category } from '@/entities/category'
 import { useRemoveCategory } from '@/entities/category'
 import { ApiError } from '@/shared/api/client'
+import { useToast } from '@/shared/ui/toast'
 import deleteIllustration from '@/shared/assets/delete.webp'
 
 interface DeleteCategoryDialogProps {
@@ -13,6 +14,7 @@ interface DeleteCategoryDialogProps {
 
 export function DeleteCategoryDialog({ open, onOpenChange, category }: DeleteCategoryDialogProps) {
   const removeCategory = useRemoveCategory()
+  const toast = useToast()
   const [error, setError] = useState<string | null>(null)
 
   async function handleConfirm() {
@@ -20,9 +22,12 @@ export function DeleteCategoryDialog({ open, onOpenChange, category }: DeleteCat
     setError(null)
     try {
       await removeCategory.mutateAsync(category.id)
+      toast({ title: 'Kateqoriya silindi', description: `“${category.name}”` })
       onOpenChange(false)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Silinmə uğursuz oldu')
+      const message = err instanceof ApiError ? err.message : 'Silinmə uğursuz oldu'
+      setError(message)
+      toast({ title: 'Silinmədi', description: message, variant: 'error' })
     }
   }
 

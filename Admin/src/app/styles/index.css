@@ -133,3 +133,49 @@
     @apply font-sans;
     }
 }
+/* Statistika mövzulu loading: diaqram sütunları növbə ilə böyüyüb-kiçilir. */
+@keyframes stats-bar {
+    0%, 100% { transform: scaleY(0.25); }
+    50% { transform: scaleY(1); }
+}
+
+/* Səhifə keçidi: yuxarıdakı zolaq soldan sağa dolur. */
+@keyframes route-progress {
+    0% { transform: scaleX(0); opacity: 1; }
+    70% { transform: scaleX(0.85); opacity: 1; }
+    100% { transform: scaleX(1); opacity: 0; }
+}
+
+/* Yeni səhifənin məzmunu yumşaq görünür. */
+@keyframes page-enter {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Toast: sağdan sürüşüb gəlir, alt zolaq geri sayır. */
+@keyframes toast-in {
+    from { opacity: 0; transform: translateX(24px) scale(0.98); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes toast-timer {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+@theme {
+    --animate-toast-in: toast-in 0.25s ease-out;
+    --animate-toast-timer: toast-timer linear forwards;
+    --animate-stats-bar: stats-bar 1s ease-in-out infinite;
+    --animate-route-progress: route-progress 0.7s ease-out forwards;
+    --animate-page-enter: page-enter 0.35s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-stats-bar,
+    .animate-route-progress,
+    .animate-page-enter,
+    .animate-toast-in {
+        animation: none;
+    }
+}

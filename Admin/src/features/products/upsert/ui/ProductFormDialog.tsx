@@ -4,6 +4,7 @@ import { useCategories } from '@/entities/category'
 import type { Product, ProductMeasure } from '@/entities/product'
 import { PRODUCT_MEASURE_LABEL, PRODUCT_MEASURES, useCreateProduct, useUpdateProduct } from '@/entities/product'
 import { ApiError } from '@/shared/api/client'
+import { useToast } from '@/shared/ui/toast'
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/shared/ui/dialog'
 
 interface ProductFormDialogProps {
@@ -19,6 +20,7 @@ const labelClass = 'text-[22px] font-normal leading-[100%] text-[#2B3043]'
 
 export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDialogProps) {
   const isEditMode = product !== undefined
+  const toast = useToast()
   const createProduct = useCreateProduct()
   const updateProduct = useUpdateProduct()
   const { data: categories } = useCategories()
@@ -64,12 +66,16 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
     try {
       if (isEditMode) {
         await updateProduct.mutateAsync({ id: product.id, input })
+        toast({ title: 'Məhsul yeniləndi', description: `“${input.title}”` })
       } else {
         await createProduct.mutateAsync(input)
+        toast({ title: 'Məhsul yaradıldı', description: `“${input.title}”` })
       }
       onOpenChange(false)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Əməliyyat uğursuz oldu')
+      const message = err instanceof ApiError ? err.message : 'Əməliyyat uğursuz oldu'
+      setError(message)
+      toast({ title: 'Yadda saxlanmadı', description: message, variant: 'error' })
     }
   }
 

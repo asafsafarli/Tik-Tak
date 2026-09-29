@@ -3,6 +3,7 @@ import { XIcon } from 'lucide-react'
 import type { Category } from '@/entities/category'
 import { useCreateCategory, useUpdateCategory } from '@/entities/category'
 import { ApiError } from '@/shared/api/client'
+import { useToast } from '@/shared/ui/toast'
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/shared/ui/dialog'
 
 interface CategoryFormDialogProps {
@@ -18,6 +19,7 @@ const labelClass = 'text-[22px] font-normal leading-[100%] text-[#2B3043]'
 
 export function CategoryFormDialog({ open, onOpenChange, category }: CategoryFormDialogProps) {
   const isEditMode = category !== undefined
+  const toast = useToast()
   const createCategory = useCreateCategory()
   const updateCategory = useUpdateCategory()
 
@@ -44,12 +46,16 @@ export function CategoryFormDialog({ open, onOpenChange, category }: CategoryFor
     try {
       if (isEditMode) {
         await updateCategory.mutateAsync({ id: category.id, input })
+        toast({ title: 'Kateqoriya yeniləndi', description: `“${input.name}”` })
       } else {
         await createCategory.mutateAsync(input)
+        toast({ title: 'Kateqoriya yaradıldı', description: `“${input.name}”` })
       }
       onOpenChange(false)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Əməliyyat uğursuz oldu')
+      const message = err instanceof ApiError ? err.message : 'Əməliyyat uğursuz oldu'
+      setError(message)
+      toast({ title: 'Yadda saxlanmadı', description: message, variant: 'error' })
     }
   }
 

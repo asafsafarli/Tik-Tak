@@ -27,6 +27,7 @@ import { OrderDetailDialog } from '@/features/orders/detail'
 import { useSearch } from '@/shared/lib/search-context'
 import { formatDayMonth } from '@/shared/lib/format-date'
 import { cn } from '@/shared/lib/utils'
+import { useCountUp } from '@/shared/lib/use-count-up'
 import {
   Table,
   TableBody,
@@ -34,7 +35,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  ACTION_LABEL,
+  COL,
 } from '@/shared/ui/table'
+import { StatsLoader } from '@/shared/ui/stats-loader'
 
 const MANAT = '₼'
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50]
@@ -43,12 +47,13 @@ type TextColumn = 'orderNumber' | 'createdAt' | 'address' | 'itemCount' | 'subto
 type SortKey = TextColumn | 'status'
 type SortDir = 'asc' | 'desc'
 
-const TEXT_COLUMNS: { key: TextColumn; label: string }[] = [
+// `hide`: cədvəl darlaşanda bu sütun gizlənir (bax `COL`).
+const TEXT_COLUMNS: { key: TextColumn; label: string; hide?: string }[] = [
   { key: 'orderNumber', label: 'No' },
-  { key: 'createdAt', label: 'Tarix' },
-  { key: 'address', label: 'Çatdırılma ünvanı' },
-  { key: 'itemCount', label: 'Məhsul sayı' },
-  { key: 'subtotal', label: 'Subtotal/Çatdırılma' },
+  { key: 'createdAt', label: 'Tarix', hide: COL.sm },
+  { key: 'address', label: 'Çatdırılma ünvanı', hide: COL.xl },
+  { key: 'itemCount', label: 'Məhsul sayı', hide: COL.lg },
+  { key: 'subtotal', label: 'Subtotal/Çatdırılma', hide: COL.md },
 ]
 
 interface OrderRow {
@@ -171,27 +176,29 @@ export function OrdersList() {
       : `${startIndex + 1}-${Math.min(startIndex + pageSize, sorted.length)} / ${sorted.length} nəticə`
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="border-b border-[#EDEEF2] pb-5">
-        <h1 className="text-[28px] leading-[100%] font-semibold text-[#2B3043]">Sifarişlər</h1>
+    <div className="flex flex-col gap-4">
+      <div className="border-b border-[#EDEEF2] pb-4">
+        <h1 className="text-[20px] leading-[100%] font-semibold text-[#2B3043] sm:text-[22px]">Sifarişlər</h1>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 2xl:grid-cols-6">
-        <StatCard label="Ümumi sifarişlər" icon={ShoppingCart} color="#3E7BFA" value={stats.total} />
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-6">
+        <StatCard label="Ümumi sifarişlər" icon={ShoppingCart} color="#3E7BFA" value={stats.total} loading={isLoading} />
         <StatCard
           label="Ümumi satış"
           icon={CircleDollarSign}
           color="#4CAF50"
-          value={stats.totalRevenue.toFixed(2)}
+          value={stats.totalRevenue}
+          decimals={2}
+          loading={isLoading}
           trend
         />
-        <StatCard label="Gözləyən" icon={Clock} color="#E8A33D" value={stats.pending} />
-        <StatCard label="Hazırlanır" icon={Clock} color="#8B5CF6" value={stats.preparing} />
-        <StatCard label="Çatdırılan" icon={CircleCheck} color="#4CAF50" value={stats.delivered} />
-        <StatCard label="Ləğv edilən" icon={CircleX} color="#EF4444" value={stats.cancelled} />
+        <StatCard label="Gözləyən" icon={Clock} color="#E8A33D" value={stats.pending} loading={isLoading} />
+        <StatCard label="Hazırlanır" icon={Clock} color="#8B5CF6" value={stats.preparing} loading={isLoading} />
+        <StatCard label="Çatdırılan" icon={CircleCheck} color="#4CAF50" value={stats.delivered} loading={isLoading} />
+        <StatCard label="Ləğv edilən" icon={CircleX} color="#EF4444" value={stats.cancelled} loading={isLoading} />
       </div>
 
-      {isLoading && <p className="text-sm text-neutral-500">Yüklənir...</p>}
+      {isLoading && <StatsLoader />}
       {isError && <p className="text-sm text-red-600">Sifarişlər yüklənə bilmədi.</p>}
 
       {!isLoading && !isError && (
@@ -203,8 +210,9 @@ export function OrdersList() {
                   <TableHead
                     key={column.key}
                     className={cn(
-                      'px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500',
+                      'px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500',
                       index === 0 && 'rounded-l-lg',
+                      column.hide,
                     )}
                   >
                     <div className="flex items-center gap-1.5">
@@ -263,7 +271,7 @@ export function OrdersList() {
                   </TableHead>
                 ))}
 
-                <TableHead className="px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
+                <TableHead className="px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500">
                   <div className="flex items-center gap-1.5">
                     <span>Status</span>
                     <SortIcon active={sort?.key === 'status'} onClick={() => toggleSort('status')} />
@@ -328,8 +336,8 @@ export function OrdersList() {
                   </div>
                 </TableHead>
 
-                <TableHead className="rounded-r-lg px-4 py-4 text-[14px] leading-[100%] font-normal text-neutral-500">
-                  Əməliyyat
+                <TableHead className="rounded-r-lg px-3 py-3 text-[13px] leading-[100%] font-normal text-neutral-500">
+                  <span className={ACTION_LABEL}>Əməliyyat</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -337,7 +345,7 @@ export function OrdersList() {
             <TableBody>
               {sorted.length === 0 && (
                 <TableRow className="border-transparent hover:bg-transparent">
-                  <TableCell colSpan={7} className="px-4 py-10 text-center text-sm text-neutral-500">
+                  <TableCell colSpan={7} className="px-3 py-10 text-center text-sm text-neutral-500">
                     Heç bir sifariş tapılmadı.
                   </TableCell>
                 </TableRow>
@@ -346,23 +354,23 @@ export function OrdersList() {
               {pageItems.map((row) => (
                 <TableRow key={row.order.id} className="border-neutral-100">
                   <TableCell
-                    className="whitespace-nowrap px-4 py-5 text-[15px] leading-[100%] font-light text-[#2B3043]"
+                    className="whitespace-nowrap px-3 py-2.5 text-[13px] leading-[100%] font-light text-[#2B3043]"
                   >
                     {row.order.orderNumber}
                   </TableCell>
-                  <TableCell className="px-4 py-5 text-[15px] leading-[100%] font-light text-[#2B3043]">
+                  <TableCell className={cn('px-3 py-2.5 text-[14px] leading-[100%] font-light text-[#2B3043]', COL.sm)}>
                     {formatDayMonth(row.order.createdAt)}
                   </TableCell>
                   <TableCell
-                    className="max-w-[220px] truncate px-4 py-5 text-[15px] leading-[100%] font-light text-[#2B3043]"
+                    className={cn('max-w-[200px] truncate px-3 py-2.5 text-[14px] leading-[100%] font-light text-[#2B3043]', COL.xl)}
                     title={row.order.address}
                   >
                     {row.order.address}
                   </TableCell>
-                  <TableCell className="px-4 py-5 text-[15px] leading-[100%] font-light text-[#2B3043]">
+                  <TableCell className={cn('px-3 py-2.5 text-[14px] leading-[100%] font-light text-[#2B3043]', COL.lg)}>
                     {row.itemCount}
                   </TableCell>
-                  <TableCell className="px-4 py-5 text-[15px] leading-[100%] font-light whitespace-nowrap text-[#2B3043]">
+                  <TableCell className={cn('px-3 py-2.5 text-[14px] leading-[100%] font-light whitespace-nowrap text-[#2B3043]', COL.md)}>
                     {row.subtotal.toFixed(2)} {MANAT}{' '}
                     {row.deliveryFee === 0 ? (
                       <span className="text-[#4CAF50]">• Pulsuz</span>
@@ -372,17 +380,18 @@ export function OrdersList() {
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-5">
+                  <TableCell className="px-3 py-2">
                     <StatusBadge status={row.order.status} />
                   </TableCell>
-                  <TableCell className="px-4 py-5">
+                  <TableCell className="px-3 py-2">
                     <button
                       type="button"
                       onClick={() => setDetailOrder(row.order)}
-                      className="inline-flex items-center gap-1.5 text-[15px] leading-[100%] font-light text-[#2B3043] hover:text-neutral-900"
+                      aria-label="Göstər"
+                      className="inline-flex items-center gap-1.5 text-[14px] leading-[100%] font-light text-[#2B3043] hover:text-neutral-900"
                     >
                       <Eye className="size-4 text-[#9AA0AC]" />
-                      Göstər
+                      <span className={ACTION_LABEL}>Göstər</span>
                     </button>
                   </TableCell>
                 </TableRow>
@@ -393,7 +402,7 @@ export function OrdersList() {
                   key={`filler-${index}`}
                   className="border-transparent hover:bg-transparent"
                 >
-                  <TableCell colSpan={7} aria-hidden className="px-4 py-5 text-[15px] leading-[100%]">
+                  <TableCell colSpan={7} aria-hidden className="h-[43px] p-0">
                     &nbsp;
                   </TableCell>
                 </TableRow>
@@ -401,14 +410,14 @@ export function OrdersList() {
             </TableBody>
           </Table>
 
-          <div className="flex flex-wrap items-center justify-end gap-x-6 gap-y-3 pt-1 text-sm text-neutral-500">
-            <span>{rangeLabel}</span>
+          <div className="flex flex-wrap items-center justify-end gap-x-5 gap-y-2 text-[13px] text-neutral-500">
+            <span className="hidden whitespace-nowrap sm:inline">{rangeLabel}</span>
 
             {pageCount > 1 && (
               <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
             )}
 
-            <div className="relative">
+            <div className="relative hidden sm:block">
               <select
                 value={pageSize}
                 onChange={(event) => setPageSize(Number(event.target.value))}
@@ -455,18 +464,41 @@ interface StatCardProps {
   label: string
   icon: LucideIcon
   color: string
-  value: number | string
+  value: number
+  decimals?: number
+  loading: boolean
   trend?: boolean
 }
 
-function StatCard({ label, icon: Icon, color, value, trend = false }: StatCardProps) {
+// Yüklənərkən rəqəm "fırlanır", məlumat gələndə son nəticəyə yavaşlayıb dayanır.
+function StatCard({ label, icon: Icon, color, value, decimals = 0, loading, trend = false }: StatCardProps) {
+  const animated = useCountUp(value, loading, decimals ? 99999 : 999)
+
   return (
-    <div className="rounded-[10px] border border-[#EEF0F4] bg-white px-5 py-4">
-      <p className="text-[13px] leading-[100%] font-normal text-[#9AA0AC]">{label}</p>
-      <div className="mt-3 flex items-center gap-2">
-        <Icon className="size-5 shrink-0" style={{ color }} />
-        <span className="text-[22px] leading-[100%] font-semibold text-[#2B3043]">{value}</span>
-        {trend ? <TrendingUp className="size-3.5 text-[#4CAF50]" /> : null}
+    <div className="relative overflow-hidden rounded-[10px] border border-[#EEF0F4] bg-white px-3 py-2.5 sm:px-3.5 sm:py-3">
+      <span
+        aria-hidden
+        className="absolute inset-y-0 left-0 w-[3px]"
+        style={{ backgroundColor: color }}
+      />
+      <p className="truncate text-[12px] leading-[100%] font-normal text-[#9AA0AC]">{label}</p>
+      <div className="mt-2 flex items-center gap-1.5">
+        <span
+          className="hidden size-7 shrink-0 items-center justify-center rounded-full sm:flex"
+          style={{ backgroundColor: `${color}14` }}
+        >
+          <Icon className="size-4" style={{ color }} />
+        </span>
+        <span
+          className={cn(
+            'truncate text-[19px] leading-[100%] font-semibold tabular-nums text-[#2B3043]',
+            loading && 'text-[#C3C7D1]',
+          )}
+          aria-busy={loading}
+        >
+          {animated.toFixed(decimals)}
+        </span>
+        {trend && !loading ? <TrendingUp className="size-3.5 shrink-0 text-[#4CAF50]" /> : null}
       </div>
     </div>
   )
@@ -476,7 +508,7 @@ function StatusBadge({ status }: { status: OrderStatus }) {
   const meta = ORDER_STATUS_META[status]
   return (
     <span
-      className="inline-flex h-[30px] items-center rounded-[8px] border px-3 text-[13px] leading-[100%] font-medium whitespace-nowrap"
+      className="inline-flex h-[26px] items-center rounded-[7px] border px-2.5 text-[12px] leading-[100%] font-medium whitespace-nowrap"
       style={{ color: meta.color, borderColor: `${meta.color}66`, backgroundColor: `${meta.color}14` }}
     >
       {meta.label}
@@ -553,7 +585,7 @@ function PaginationButton({
     <button
       type="button"
       className={cn(
-        'flex h-8 min-w-8 items-center justify-center rounded-lg px-2 text-sm font-light transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+        'flex h-7 min-w-7 items-center justify-center rounded-lg px-1.5 text-[13px] sm:h-8 sm:min-w-8 sm:px-2 sm:text-sm font-light transition-colors disabled:cursor-not-allowed disabled:opacity-40',
         active ? 'font-normal text-white' : 'text-[#2B3043] hover:bg-neutral-100',
         className,
       )}
