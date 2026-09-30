@@ -24,8 +24,6 @@ const VARIANTS: Record<ToastVariant, { icon: LucideIcon; color: string }> = {
 
 const ToastContext = createContext<((toast: ToastInput) => void) | null>(null)
 
-// Küncdə qısa bildirişlər (giriş, çıxış, status dəyişikliyi). Router-dən kənarda
-// yaşayır ki, səhifə dəyişəndə (məs. çıxışdan sonra /login) bildiriş itməsin.
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const nextId = useRef(0)
@@ -37,7 +35,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const show = useCallback(
     ({ title, description, variant = 'success' }: ToastInput) => {
       const id = (nextId.current += 1)
-      // Eyni anda ən çox 3 bildiriş — köhnələr yer açır.
       setToasts((current) => [...current.slice(-2), { id, title, description, variant }])
       window.setTimeout(() => dismiss(id), DURATION)
     },
@@ -89,7 +86,6 @@ function ToastCard({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => vo
       >
         <X className="size-4" />
       </button>
-      {/* Bildirişin nə qədər qaldığını göstərən zolaq */}
       <span
         aria-hidden
         className="absolute bottom-0 left-0 h-[3px] w-full origin-left animate-toast-timer"

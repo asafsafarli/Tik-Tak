@@ -5,7 +5,6 @@ export interface OrderStatusMeta {
   color: string
 }
 
-// Cədvəl badge-ləri və status seçici üçün ortaq görünüş konfiqurasiyası.
 export const ORDER_STATUS_META: Record<OrderStatus, OrderStatusMeta> = {
   PENDING: { label: 'Gözləyir', color: '#E8A33D' },
   CONFIRMED: { label: 'Təsdiqləndi', color: '#3E7BFA' },

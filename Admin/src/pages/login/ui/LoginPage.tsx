@@ -27,7 +27,6 @@ export function LoginPage() {
       <div className="hidden w-[2px] self-stretch bg-[#D9D9D9] lg:block" />
       <div className="flex w-full flex-col items-center justify-center gap-8 p-6 sm:p-10 lg:w-1/2">
         <div className="flex w-full max-w-[566px] flex-col items-center gap-3">
-          {/* Sol panel gizli olanda (lg-dən aşağı) loqo burada görünür. */}
           <span className="mb-4 text-[32px] leading-[100%] font-extrabold tracking-[0.03em] text-neutral-900 lg:hidden">
             TIK TAK ADMİN
           </span>

@@ -1,7 +1,5 @@
 import { useLocation } from 'react-router-dom'
 
-// Hər səhifə keçidində yuxarıda qısa yaşıl zolaq — `key` dəyişəndə animasiya
-// yenidən başlayır, əlavə state lazım deyil.
 export function RouteProgress() {
   const { pathname } = useLocation()
 

@@ -19,8 +19,6 @@ export function computeOrderStats(orders: Order[]): OrderStats {
     {} as Record<OrderStatus, number>,
   )
 
-  // Satış = yalnız çatdırılmış sifarişlər (backend-in `/orders/admin/stats`
-  // TOTAL_REVENUE-u ilə eyni). Gözləyən/ləğv edilən sifarişlər satış deyil.
   let totalRevenue = 0
   for (const order of orders) {
     byStatus[order.status] += 1

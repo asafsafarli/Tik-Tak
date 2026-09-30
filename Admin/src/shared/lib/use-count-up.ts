@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 const ROLL_INTERVAL = 70
 const SETTLE_DURATION = 1200
 
-// Statistika rəqəmləri: məlumat gələnə qədər təsadüfi "fırlanır", gələndən
-// sonra hazırkı dəyərdən son nəticəyə yavaşlayaraq (ease-out) gəlib dayanır.
 export function useCountUp(target: number, isLoading: boolean, rollMax = 999) {
   const [value, setValue] = useState(0)
   const valueRef = useRef(0)
