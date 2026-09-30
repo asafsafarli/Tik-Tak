@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { tokenStorage } from "@/shared/lib/token-storage";
 import {
   fetchProfile,
@@ -23,7 +24,7 @@ interface SessionContextValue {
   isLoading: boolean;
   login: (phone: string, password: string) => Promise<void>;
   signup: (fullName: string, phone: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: (redirectTo?: string) => void;
   updateProfile: (payload: UpdateProfilePayload) => Promise<void>;
 }
 
@@ -31,6 +32,16 @@ const SessionContext = createContext<SessionContextValue | null>(null);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  // `logout(redirectTo)` zamanı profil yalnız yeni səhifəyə keçəndən sonra
+  // sıfırlanır — yoxsa hesab səhifələrinin auth guard-ı istifadəçini
+  // `redirectTo` əvəzinə /login-ə atır.
+  const [pendingLogoutPath, setPendingLogoutPath] = useState<string | null>(null);
+  if (pendingLogoutPath !== null && pathname === pendingLogoutPath) {
+    setPendingLogoutPath(null);
+    setProfile(null);
+  }
   // Token varsa profil çəkilənə qədər "yüklənir" sayılır.
   const [isLoading, setIsLoading] = useState(
     () => typeof window !== "undefined" && !!tokenStorage.getAccessToken(),
@@ -68,10 +79,18 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setProfile(await updateProfileRequest(payload));
   }, []);
 
-  const logout = useCallback(() => {
-    tokenStorage.clear();
-    setProfile(null);
-  }, []);
+  const logout = useCallback(
+    (redirectTo?: string) => {
+      tokenStorage.clear();
+      if (redirectTo) {
+        setPendingLogoutPath(redirectTo);
+        router.replace(redirectTo);
+      } else {
+        setProfile(null);
+      }
+    },
+    [router],
+  );
 
   return (
     <SessionContext.Provider

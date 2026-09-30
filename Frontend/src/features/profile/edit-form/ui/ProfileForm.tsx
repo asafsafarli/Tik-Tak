@@ -8,17 +8,16 @@ interface FieldProps extends ComponentProps<"input"> {
   label: string;
 }
 
-// `shared/ui/TextField` ilə eyni ölçü (60px, radius 10, 22px label), amma
-// input mətni burada daha kiçikdir (16px) və disabled vəziyyəti var.
+// Hesab səhifəsi üçün yığcam sahə: 48px hündürlük, 14px label, disabled vəziyyəti var.
 function Field({ label, id, ...props }: FieldProps) {
   return (
-    <div className="flex w-full flex-col gap-3">
-      <label htmlFor={id} className="text-[22px] font-normal leading-none text-ink">
+    <div className="flex w-full flex-col gap-2">
+      <label htmlFor={id} className="text-[14px] font-normal leading-none text-ink">
         {label}
       </label>
       <input
         id={id}
-        className="h-[60px] w-full rounded-[10px] border border-transparent bg-brand-soft px-4 text-[16px] leading-none text-ink outline-none transition-colors placeholder:font-light placeholder:text-[#BABBC2] focus:border-leaf focus:bg-white disabled:cursor-not-allowed disabled:text-muted"
+        className="h-12 w-full rounded-[10px] border border-transparent bg-brand-soft px-4 text-[15px] leading-none text-ink outline-none transition-colors placeholder:font-light placeholder:text-[#BABBC2] focus:border-leaf focus:bg-white disabled:cursor-not-allowed disabled:text-muted"
         {...props}
       />
     </div>
@@ -33,11 +32,11 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
     <form
       onSubmit={form.handleSubmit}
       noValidate
-      className="flex flex-col rounded-[10px] bg-white p-6 sm:p-10"
+      className="flex flex-col rounded-[10px] bg-white p-5 sm:p-6"
     >
-      <h2 className="text-[28px] font-normal leading-none text-ink">Əlaqə məlumatlarınız</h2>
+      <h2 className="text-[20px] font-medium leading-none text-ink">Əlaqə məlumatlarınız</h2>
 
-      <div className="mt-8 grid grid-cols-1 gap-x-10 gap-y-7 md:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
         <Field
           label="Adınız"
           id="full_name"
@@ -71,14 +70,14 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
         />
       </div>
 
-      <h2 className="mt-16 text-[28px] font-normal leading-none text-ink">
+      <h2 className="mt-8 text-[20px] font-medium leading-none text-ink">
         Şifrənin yenilənməsi
       </h2>
-      <p className="mt-2 text-[12px] font-normal leading-none text-ink">
+      <p className="mt-2 text-[12px] font-normal leading-none text-muted">
         Ehtiyac yoxdursa boş buraxın
       </p>
 
-      <div className="mt-6 grid grid-cols-1 gap-x-10 gap-y-7 md:grid-cols-2">
+      <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
         <Field
           label="Yeni Şifrə"
           id="password"
@@ -111,7 +110,7 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
       <button
         type="submit"
         disabled={form.isSubmitting}
-        className="mt-10 flex h-[60px] w-[520px] max-w-full items-center justify-center self-center rounded-[10px] bg-[#92D871] text-[24px] font-bold leading-none text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-6 flex h-12 w-[360px] max-w-full items-center justify-center self-center rounded-[10px] bg-[#92D871] text-[18px] font-bold leading-none text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {form.isSubmitting ? "Yenilənir..." : "Məlumatları yenilə"}
       </button>
