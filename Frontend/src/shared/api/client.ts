@@ -72,16 +72,18 @@ export async function apiFetch<T>(
   const url = buildUrl(path, params);
 
   function send() {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+    // FormData-da `Content-Type`-ı brauzer özü (boundary ilə) qoyur.
+    const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
+    const headers: Record<string, string> = isFormData
+      ? {}
+      : { "Content-Type": "application/json" };
     const bearer = token ?? (auth ? tokenStorage.getAccessToken() : null);
     if (bearer) headers.Authorization = `Bearer ${bearer}`;
 
     return fetch(url, {
       method,
       headers,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body: isFormData ? body : body !== undefined ? JSON.stringify(body) : undefined,
       next: revalidate === undefined ? undefined : { revalidate },
     });
   }

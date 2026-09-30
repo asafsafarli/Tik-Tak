@@ -6,10 +6,11 @@ import { useProfileForm } from "../model/use-profile-form";
 
 interface FieldProps extends ComponentProps<"input"> {
   label: string;
+  error?: string;
 }
 
 // Hesab səhifəsi üçün yığcam sahə: 48px hündürlük, 14px label, disabled vəziyyəti var.
-function Field({ label, id, ...props }: FieldProps) {
+function Field({ label, id, error, ...props }: FieldProps) {
   return (
     <div className="flex w-full flex-col gap-2">
       <label htmlFor={id} className="text-[14px] font-normal leading-none text-ink">
@@ -17,9 +18,18 @@ function Field({ label, id, ...props }: FieldProps) {
       </label>
       <input
         id={id}
-        className="h-12 w-full rounded-[10px] border border-transparent bg-brand-soft px-4 text-[15px] leading-none text-ink outline-none transition-colors placeholder:font-light placeholder:text-[#BABBC2] focus:border-leaf focus:bg-white disabled:cursor-not-allowed disabled:text-muted"
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        className={`h-12 w-full rounded-[10px] border bg-brand-soft px-4 text-[15px] leading-none text-ink outline-none transition-colors placeholder:font-light placeholder:text-[#BABBC2] focus:border-leaf focus:bg-white disabled:cursor-not-allowed disabled:text-muted ${
+          error ? "border-[#F0847A]" : "border-transparent"
+        }`}
         {...props}
       />
+      {error ? (
+        <p id={`${id}-error`} className="text-[13px] leading-none text-[#F0847A]">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -42,6 +52,7 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
           id="full_name"
           placeholder="Adınız"
           autoComplete="name"
+          error={form.errors.fullName}
           value={form.fullName}
           onChange={(event) => form.setFullName(event.target.value)}
         />
@@ -65,6 +76,7 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
           placeholder="Unvanınız"
           autoComplete="street-address"
           required
+          error={form.errors.address}
           value={form.address}
           onChange={(event) => form.setAddress(event.target.value)}
         />
@@ -91,21 +103,11 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
           id="password_repeat"
           type="password"
           autoComplete="new-password"
+          error={form.errors.passwordRepeat}
           value={form.passwordRepeat}
           onChange={(event) => form.setPasswordRepeat(event.target.value)}
         />
       </div>
-
-      {form.error ? (
-        <p role="alert" className="mt-6 text-center text-[14px] leading-none text-[#F0847A]">
-          {form.error}
-        </p>
-      ) : null}
-      {form.success ? (
-        <p role="status" className="mt-6 text-center text-[14px] leading-none text-leaf">
-          Məlumatlarınız yeniləndi
-        </p>
-      ) : null}
 
       <button
         type="submit"
