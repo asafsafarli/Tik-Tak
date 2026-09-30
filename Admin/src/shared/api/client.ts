@@ -58,8 +58,6 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
 
   let response = await send()
 
-  // Access token bitibsə: bir dəfə refresh cəhd et, alınsa sorğunu təkrarla,
-  // alınmasa sessiyanı təmizlə və login-ə yönləndir.
   if (response.status === 401 && auth) {
     const refreshed = await refreshAccessToken()
     if (refreshed) {
