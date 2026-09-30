@@ -3,14 +3,25 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { ProtectedLayout } from './ProtectedLayout'
 import { RouteError } from './RouteError'
 
-// Route-lar tələb olunanda yüklənir — hər səhifə öz chunk-ında (widget-lər, dialoqlar,
-// login illüstrasiyası ilk bundle-a düşmür).
-const LoginPage = lazy(() => import('@/pages/login').then((m) => ({ default: m.LoginPage })))
-const OrdersPage = lazy(() => import('@/pages/orders').then((m) => ({ default: m.OrdersPage })))
-const CampaignsPage = lazy(() => import('@/pages/campaigns').then((m) => ({ default: m.CampaignsPage })))
-const CategoriesPage = lazy(() => import('@/pages/categories').then((m) => ({ default: m.CategoriesPage })))
-const ProductsPage = lazy(() => import('@/pages/products').then((m) => ({ default: m.ProductsPage })))
-const UsersPage = lazy(() => import('@/pages/users').then((m) => ({ default: m.UsersPage })))
+const loadLogin = () => import('@/pages/login').then((m) => ({ default: m.LoginPage }))
+const loadOrders = () => import('@/pages/orders').then((m) => ({ default: m.OrdersPage }))
+const loadCampaigns = () => import('@/pages/campaigns').then((m) => ({ default: m.CampaignsPage }))
+const loadCategories = () => import('@/pages/categories').then((m) => ({ default: m.CategoriesPage }))
+const loadProducts = () => import('@/pages/products').then((m) => ({ default: m.ProductsPage }))
+const loadUsers = () => import('@/pages/users').then((m) => ({ default: m.UsersPage }))
+
+const LoginPage = lazy(loadLogin)
+const OrdersPage = lazy(loadOrders)
+const CampaignsPage = lazy(loadCampaigns)
+const CategoriesPage = lazy(loadCategories)
+const ProductsPage = lazy(loadProducts)
+const UsersPage = lazy(loadUsers)
+
+export function prefetchPages() {
+  for (const load of [loadOrders, loadCampaigns, loadCategories, loadProducts, loadUsers]) {
+    load().catch(() => {})
+  }
+}
 
 export const router = createBrowserRouter([
   {
