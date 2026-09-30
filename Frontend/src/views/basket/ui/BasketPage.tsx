@@ -33,7 +33,7 @@ export function BasketPage() {
                   <h1 className="text-[24px] font-bold leading-none text-ink">Səbətim</h1>
                   <button
                     type="button"
-                    onClick={clear}
+                    onClick={() => clear({ notify: true })}
                     className="text-[14px] font-normal leading-none text-muted transition-opacity hover:opacity-70"
                   >
                     Səbəti təmizlə
