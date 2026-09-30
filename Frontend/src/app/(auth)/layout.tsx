@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
-  return <div className="flex min-h-screen flex-col">{children}</div>;
+  return <div className="flex h-dvh flex-col overflow-hidden">{children}</div>;
 }

@@ -26,28 +26,32 @@ export function AuthShell({ active, children }: AuthShellProps) {
   }, [isLoading, isAuthenticated, router]);
 
   return (
-    <div className="grid flex-1 md:grid-cols-2">
-      <aside className="relative hidden items-center justify-center overflow-hidden bg-leaf md:flex">
-        <span className="absolute left-8 top-8 z-10 text-[44px] font-extrabold leading-none tracking-[0.03em] text-[#2B3043] lg:left-12 lg:top-12 lg:text-[64px] xl:text-[80px]">
+    <div className="grid min-h-0 flex-1 md:grid-cols-2">
+      {/* Loqo öz sətrindədir, şəkil yalnız altda qalan boşluğa sığdırılır —
+          beləcə heç bir ekran ölçüsündə loqonun üstünə düşmür. */}
+      <aside className="hidden min-h-0 flex-col overflow-hidden bg-leaf md:flex">
+        <span className="shrink-0 px-8 pt-8 text-[40px] font-extrabold leading-none tracking-[0.03em] text-[#2B3043] lg:px-12 lg:pt-10 lg:text-[56px] xl:text-[64px]">
           TIK TAK
         </span>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/strawberry.svg"
-          alt=""
-          aria-hidden
-          className="pointer-events-none w-[210%] max-w-none object-contain"
-        />
+        <div className="relative min-h-0 flex-1">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/strawberry.svg"
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute inset-0 size-full object-contain object-left"
+          />
+        </div>
       </aside>
 
-      <div className="flex items-center justify-center px-6 py-10 sm:px-10 sm:py-12 lg:px-16">
-        <div className="w-full max-w-[566px]">
-            <nav className="flex justify-center gap-[clamp(1.75rem,9vw,138px)] border-b border-neutral-200">
+      <div className="flex min-h-0 items-center justify-center overflow-y-auto px-6 py-8 sm:px-10 lg:px-16">
+        <div className="w-full max-w-[440px]">
+            <nav className="flex justify-center gap-[clamp(1.5rem,6vw,80px)] border-b border-neutral-200">
               {TABS.map((tab) => (
                 <Link
                   key={tab.view}
                   href={tab.href}
-                  className={`-mb-px whitespace-nowrap border-b-2 pb-3 text-[26px] font-normal leading-none tracking-normal text-[#1A1D28] ${
+                  className={`-mb-px whitespace-nowrap border-b-2 pb-3 text-[20px] font-normal leading-none tracking-normal text-[#1A1D28] ${
                     tab.view === active
                       ? "border-[#92D871]"
                       : "border-transparent"
@@ -58,9 +62,9 @@ export function AuthShell({ active, children }: AuthShellProps) {
               ))}
             </nav>
 
-            <div className="mt-8">{children}</div>
+            <div className="mt-6">{children}</div>
 
-            <p className="mt-4 text-[18px] font-light leading-none text-muted">
+            <p className="mt-4 text-[15px] font-light leading-none text-muted">
               {active === "login" ? (
                 <>
                   Hesabın yoxdursa{" "}
