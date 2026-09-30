@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { SiteHeader } from "@/widgets/site-header";
 import { AccountSidebar } from "@/widgets/account-sidebar";
 import { ProfileForm } from "@/features/profile/edit-form";
+import { AvatarCard } from "@/features/profile/avatar-upload";
 import { Container } from "@/shared/ui/container";
 import { useSession } from "@/entities/session";
 import { SKIP_AUTH_GUARD } from "@/shared/config/env";
@@ -30,9 +31,12 @@ export function ProfilePage() {
 
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
             <AccountSidebar className="lg:w-[260px] lg:shrink-0 2xl:w-[300px]" />
-            <div className="min-w-0 flex-1">
-              {/* Profil gələndə forma yenidən mount olunur ki, ilkin dəyərləri götürsün. */}
-              <ProfileForm key={profile?.id ?? "empty"} profile={profile} />
+            <div className="flex min-w-0 flex-1 flex-col gap-5 xl:flex-row xl:items-start">
+              <div className="min-w-0 flex-1">
+                {/* Profil gələndə forma yenidən mount olunur ki, ilkin dəyərləri götürsün. */}
+                <ProfileForm key={profile?.id ?? "empty"} profile={profile} />
+              </div>
+              <AvatarCard className="xl:w-[240px] xl:shrink-0" />
             </div>
           </div>
         </Container>

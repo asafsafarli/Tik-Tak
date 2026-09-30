@@ -43,7 +43,7 @@ Bütün cavablar eyni zərfə sarılıb: `{ message, data, result }`. `apiFetch`
 | Favorites | `POST /products/:id/favorite`, `GET /products/favorites` | ✅ Qoşulub | `entities/favorite`, `views/favorites` |
 | Basket | `GET /basket`, `POST /basket/:id/add`, `POST /basket/:id/remove`, `DELETE /basket/:id/remove-all`, `DELETE /basket/clear` | ✅ Qoşulub (yalnız girişli istifadəçi — qonaq "Səbətə əlavə et" klikləyəndə /login-ə yönləndirilir) | `entities/basket` |
 | Orders | `POST /orders/checkout`, `GET /orders/user` (`GET /orders/user/:id` istifadə olunmur — zərfsizdir, detal səhifəsi siyahıdan tapır) | ✅ Qoşulub | `entities/order`, `views/checkout`, `views/orders` |
-| Upload | `POST /upload` | ⏳ Qəsdən qoşulmayıb — `img_url` sahələri (olsaydı, profil şəkli kimi) sadə URL input olaraq qalacaq, fayl seçici yoxdur (Admin panelindəki qərarla eyni) | — |
+| Upload | `POST /upload` | ✅ Qoşulub (`/profile` səhifəsində profil şəkli — seçilən kimi yüklənir, `PUT /profile` ilə `img_url` yazılır) | `shared/api/upload.ts`, `features/profile/avatar-upload` |
 
 Yeni bir hissə qoşulanda bu cədvəldəki sətri **✅ Qoşulub**-a çevir və fayl sütununu doldur.
 
@@ -374,7 +374,7 @@ Tək sifarişin detalı — yuxarıdakı siyahı elementinin eynisi. **Diqqət:*
 { "message": "File uploaded successfully", "data": { "url": "https://..." }, "result": true }
 ```
 
-**Qərar: hazırda istifadə olunmur.** Profil/başqa formalarda (olsaydı) `img_url` sadə mətn input olacaq — Admin panelindəki eyni qərar (`Admin/API.md` → Upload bölməsi).
+**İstifadə:** yalnız profil şəkli üçün (`features/profile/avatar-upload`). Şəkil seçilən kimi yüklənir və URL dərhal `PUT /profile` ilə yazılır — `PUT` ad və ünvanı da tələb etdiyi üçün onlar saxlanmış profildən götürülür. Admin panelində isə `img_url` hələ də sadə URL input-dur.
 
 ---
 
@@ -389,6 +389,6 @@ Tək sifarişin detalı — yuxarıdakı siyahı elementinin eynisi. **Diqqət:*
 | Favorites | `entities/favorite` | `src/entities/favorite` |
 | Basket | `entities/basket` | `src/entities/basket` |
 | Orders | `entities/order` | `src/entities/order` |
-| Upload | — | `shared/api/upload.ts` *(hələ yaradılmayıb)* |
+| Upload | — | `shared/api/upload.ts` |
 
 Admin-dən fərqli olaraq Frontend-də React Query yoxdur — `apiFetch` sadə `fetch` sarğısıdır, Server Component-lərdə Next-in öz ISR keşi (`revalidate`), Client Component-lərdə `useState`/`useEffect` istifadə olunur (bax `entities/campaign`, `entities/category`, `entities/session`).
