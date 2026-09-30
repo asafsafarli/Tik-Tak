@@ -26,6 +26,7 @@ import {
   COL,
 } from '@/shared/ui/table'
 import { StatsLoader } from '@/shared/ui/stats-loader'
+import { useDebouncedValue } from '@/shared/lib/use-debounced-value'
 
 const PAGE_SIZE = 5
 
@@ -49,6 +50,7 @@ export function UsersList() {
   const { debouncedSearch } = useSearch()
 
   const [textFilters, setTextFilters] = useState<Partial<Record<TextColumn, string>>>({})
+  const filters = useDebouncedValue(textFilters)
   const [roleFilter, setRoleFilter] = useState<Set<string>>(new Set())
   const [sort, setSort] = useState<{ key: SortKey; dir: SortDir } | null>(null)
   const [page, setPage] = useState(1)
@@ -66,12 +68,12 @@ export function UsersList() {
       if (search && !user.full_name.toLowerCase().includes(search)) return false
       if (roleFilter.size > 0 && !roleFilter.has(user.role)) return false
       for (const column of ['fullName', 'phone', 'address'] as TextColumn[]) {
-        const value = textFilters[column]?.trim().toLowerCase()
+        const value = filters[column]?.trim().toLowerCase()
         if (value && !textValue(user, column).toLowerCase().includes(value)) return false
       }
       return true
     })
-  }, [rows, debouncedSearch, roleFilter, textFilters])
+  }, [rows, debouncedSearch, roleFilter, filters])
 
   const sorted = useMemo(() => {
     if (!sort) return filtered
@@ -92,7 +94,7 @@ export function UsersList() {
 
   useEffect(() => {
     setPage(1)
-  }, [debouncedSearch, roleFilter, textFilters])
+  }, [debouncedSearch, roleFilter, filters])
 
   const startIndex = (page - 1) * PAGE_SIZE
   const pageItems = sorted.slice(startIndex, startIndex + PAGE_SIZE)
@@ -328,6 +330,8 @@ function Avatar({ name, src }: { name: string; src: string | null }) {
         alt=""
         loading="lazy"
         decoding="async"
+        width={36}
+        height={36}
         className="size-9 rounded-full object-cover"
       />
     )

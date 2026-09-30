@@ -2,8 +2,6 @@ import { NavLink } from 'react-router-dom'
 import { LogoutButton } from '@/features/auth/logout'
 import { navItems } from '../model/nav-items'
 
-// lg-dən aşağı: 3×2 (telefon) və ya 6 sütunlu (planşet) menyu — scroll yoxdur;
-// lg və yuxarı: ikonlu şaquli menyu.
 export function Sidebar() {
   return (
     <aside className="w-full shrink-0 rounded-[10px] bg-white p-1.5 shadow-sm lg:w-[220px] lg:p-3 2xl:w-[250px]">
