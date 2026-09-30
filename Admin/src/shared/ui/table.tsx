@@ -4,8 +4,6 @@ import { cn } from "@/shared/lib/utils"
 
 function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
-    // Scroll yoxdur: cədvəl konteynerə sığmalıdır. Dar yerdə az vacib sütunlar
-    // `COL` sinifləri ilə (container query) gizlədilir.
     <div
       data-slot="table-container"
       className="@container/table relative w-full"
@@ -104,7 +102,6 @@ function TableCaption({
   )
 }
 
-// Sütunu yalnız cədvəlin öz eni kifayət edəndə göstər (ekran eninə yox).
 export const COL = {
   sm: "hidden @[480px]/table:table-cell",
   md: "hidden @[640px]/table:table-cell",
@@ -112,7 +109,6 @@ export const COL = {
   xl: "hidden @[900px]/table:table-cell",
 } as const
 
-// Əməliyyat düymələrinin mətni dar cədvəldə gizlənir, yalnız ikon qalır.
 export const ACTION_LABEL = "hidden @[780px]/table:inline"
 
 export {

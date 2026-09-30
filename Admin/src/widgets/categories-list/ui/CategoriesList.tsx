@@ -20,6 +20,7 @@ import {
   COL,
 } from '@/shared/ui/table'
 import { StatsLoader } from '@/shared/ui/stats-loader'
+import { useDebouncedValue } from '@/shared/lib/use-debounced-value'
 
 const PAGE_SIZE = 5
 
@@ -33,12 +34,13 @@ export function CategoriesList() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [deleteCategory, setDeleteCategory] = useState<Category | null>(null)
   const [columnFilters, setColumnFilters] = useState<Partial<Record<FilterColumn, string>>>({})
+  const filters = useDebouncedValue(columnFilters)
   const [page, setPage] = useState(1)
 
   const filtered = useMemo(() => {
     const search = debouncedSearch.trim().toLowerCase()
-    const nameFilter = columnFilters.name?.trim().toLowerCase()
-    const descriptionFilter = columnFilters.description?.trim().toLowerCase()
+    const nameFilter = filters.name?.trim().toLowerCase()
+    const descriptionFilter = filters.description?.trim().toLowerCase()
 
     return (categories ?? []).filter((category) => {
       if (search && !category.name.toLowerCase().includes(search)) return false
@@ -51,7 +53,7 @@ export function CategoriesList() {
       }
       return true
     })
-  }, [categories, debouncedSearch, columnFilters])
+  }, [categories, debouncedSearch, filters])
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
 
@@ -61,7 +63,7 @@ export function CategoriesList() {
 
   useEffect(() => {
     setPage(1)
-  }, [debouncedSearch, columnFilters])
+  }, [debouncedSearch, filters])
 
   const startIndex = (page - 1) * PAGE_SIZE
   const pageItems = filtered.slice(startIndex, startIndex + PAGE_SIZE)
@@ -161,6 +163,8 @@ export function CategoriesList() {
                         alt=""
                         loading="lazy"
                         decoding="async"
+                        width={36}
+                        height={36}
                         className="size-9 rounded-[8px] object-cover"
                       />
                     ) : (

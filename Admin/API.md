@@ -251,7 +251,7 @@ Gələcəkdə sifariş sayı çox böyüyüb server-side paginasiyaya keçilsə,
 { "message": "File uploaded successfully", "data": { "url": "https://..." }, "result": true }
 ```
 
-Qayıdan `url` — Product/Category/Campaign formalarında `img_url` sahəsinə yazılır.
+**Qoşulmayıb.** Formalarda `img_url` sadə URL sahəsidir; istifadə olunmayan `shared/api/upload.ts` 2026-10-01-də silindi. Fayl yükləmə lazım olsa, bu endpoint `apiFetch`-ə `FormData` dəstəyi əlavə edilərək qoşulmalıdır.
 
 ---
 
@@ -265,9 +265,9 @@ Qayıdan `url` — Product/Category/Campaign formalarında `img_url` sahəsinə 
 | Products | `entities/product` | `src/entities/product` |
 | Campaigns | `entities/campaign` | `src/entities/campaign` |
 | Orders | `entities/order` | `src/entities/order` |
-| Upload | — | `src/shared/api/upload.ts` |
+| Upload | — | *(qoşulmayıb)* |
 
-Hər entity-nin `api/` qovluğunda iki fayl olur: xam `fetch` funksiyaları (`*.ts`) və React Query hook-ları (`queries.ts`) — keşləmə, təkrar sorğuların qarşısını almaq və mutation-dan sonra avtomatik yeniləmə üçün.
+Hər entity-nin `api/` qovluğunda iki fayl olur: xam `fetch` funksiyaları (`*.ts`) və React Query hook-ları (`queries.ts`) — keşləmə və təkrar sorğuların qarşısını almaq üçün. Mutation-dan sonra siyahı yenidən yüklənmir, keş birbaşa yenilənir (`setQueryData`): status dəyişikliyi, kateqoriya/kampaniya yarat-düzəlt-sil, məhsul düzəlt. Yalnız məhsul yarat/sil server-side səhifələmə səbəbilə siyahını yenidən yükləyir.
 
 ---
 

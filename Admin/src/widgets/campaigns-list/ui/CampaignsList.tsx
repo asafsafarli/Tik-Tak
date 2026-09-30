@@ -20,6 +20,7 @@ import {
   COL,
 } from '@/shared/ui/table'
 import { StatsLoader } from '@/shared/ui/stats-loader'
+import { useDebouncedValue } from '@/shared/lib/use-debounced-value'
 
 const PAGE_SIZE = 7
 
@@ -33,12 +34,13 @@ export function CampaignsList() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [deleteCampaign, setDeleteCampaign] = useState<Campaign | null>(null)
   const [columnFilters, setColumnFilters] = useState<Partial<Record<FilterColumn, string>>>({})
+  const filters = useDebouncedValue(columnFilters)
   const [page, setPage] = useState(1)
 
   const filtered = useMemo(() => {
     const search = debouncedSearch.trim().toLowerCase()
-    const titleFilter = columnFilters.title?.trim().toLowerCase()
-    const descriptionFilter = columnFilters.description?.trim().toLowerCase()
+    const titleFilter = filters.title?.trim().toLowerCase()
+    const descriptionFilter = filters.description?.trim().toLowerCase()
 
     return (campaigns ?? []).filter((campaign) => {
       if (search && !campaign.title.toLowerCase().includes(search)) return false
@@ -51,22 +53,20 @@ export function CampaignsList() {
       }
       return true
     })
-  }, [campaigns, debouncedSearch, columnFilters])
+  }, [campaigns, debouncedSearch, filters])
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
 
-  // Axtarış dəyişəndə və ya səhifə sayı azalanda cari səhifəni sərhəd içində saxla.
   useEffect(() => {
     setPage((current) => Math.min(current, pageCount))
   }, [pageCount])
 
   useEffect(() => {
     setPage(1)
-  }, [debouncedSearch, columnFilters])
+  }, [debouncedSearch, filters])
 
   const startIndex = (page - 1) * PAGE_SIZE
   const pageItems = filtered.slice(startIndex, startIndex + PAGE_SIZE)
-  // Səhifə dəyişəndə box hündürlüyü sabit qalsın deyə son səhifəni boş sətirlərlə doldururuq.
   const fillerRows = pageCount > 1 ? PAGE_SIZE - pageItems.length : 0
 
   function openCreateDialog() {
@@ -165,6 +165,8 @@ export function CampaignsList() {
                         alt=""
                         loading="lazy"
                         decoding="async"
+                        width={36}
+                        height={36}
                         className="size-9 rounded-[8px] object-cover"
                       />
                     ) : (

@@ -60,7 +60,7 @@ export function UserDetailDialog({ open, onOpenChange, user }: UserDetailDialogP
 
 function Avatar({ name, src }: { name: string; src: string | null }) {
   if (src) {
-    return <img src={src} alt="" className="size-11 shrink-0 rounded-full object-cover" />
+    return <img src={src} alt="" width={44} height={44} decoding="async" className="size-11 shrink-0 rounded-full object-cover" />
   }
   const initial = name.trim().charAt(0).toUpperCase() || '?'
   return (

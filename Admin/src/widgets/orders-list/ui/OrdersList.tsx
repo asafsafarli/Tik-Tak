@@ -39,6 +39,7 @@ import {
   COL,
 } from '@/shared/ui/table'
 import { StatsLoader } from '@/shared/ui/stats-loader'
+import { useDebouncedValue } from '@/shared/lib/use-debounced-value'
 
 const MANAT = '₼'
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50]
@@ -47,7 +48,6 @@ type TextColumn = 'orderNumber' | 'createdAt' | 'address' | 'itemCount' | 'subto
 type SortKey = TextColumn | 'status'
 type SortDir = 'asc' | 'desc'
 
-// `hide`: cədvəl darlaşanda bu sütun gizlənir (bax `COL`).
 const TEXT_COLUMNS: { key: TextColumn; label: string; hide?: string }[] = [
   { key: 'orderNumber', label: 'No' },
   { key: 'createdAt', label: 'Tarix', hide: COL.sm },
@@ -69,6 +69,7 @@ export function OrdersList() {
 
   const [statusFilter, setStatusFilter] = useState<Set<OrderStatus>>(new Set())
   const [columnFilters, setColumnFilters] = useState<Partial<Record<TextColumn, string>>>({})
+  const filters = useDebouncedValue(columnFilters)
   const [sort, setSort] = useState<{ key: SortKey; dir: SortDir } | null>(null)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0])
@@ -100,12 +101,12 @@ export function OrdersList() {
       }
       if (statusFilter.size > 0 && !statusFilter.has(row.order.status)) return false
       for (const column of TEXT_COLUMNS) {
-        const value = columnFilters[column.key]?.trim().toLowerCase()
+        const value = filters[column.key]?.trim().toLowerCase()
         if (value && !cellText(row, column.key).toLowerCase().includes(value)) return false
       }
       return true
     })
-  }, [rows, debouncedSearch, statusFilter, columnFilters])
+  }, [rows, debouncedSearch, statusFilter, filters])
 
   const sorted = useMemo(() => {
     if (!sort) return filtered
@@ -147,7 +148,7 @@ export function OrdersList() {
 
   useEffect(() => {
     setPage(1)
-  }, [debouncedSearch, statusFilter, columnFilters, pageSize])
+  }, [debouncedSearch, statusFilter, filters, pageSize])
 
   const startIndex = (page - 1) * pageSize
   const pageItems = sorted.slice(startIndex, startIndex + pageSize)
@@ -470,7 +471,6 @@ interface StatCardProps {
   trend?: boolean
 }
 
-// Yüklənərkən rəqəm "fırlanır", məlumat gələndə son nəticəyə yavaşlayıb dayanır.
 function StatCard({ label, icon: Icon, color, value, decimals = 0, loading, trend = false }: StatCardProps) {
   const animated = useCountUp(value, loading, decimals ? 99999 : 999)
 

@@ -20,6 +20,7 @@ import {
   COL,
 } from '@/shared/ui/table'
 import { StatsLoader } from '@/shared/ui/stats-loader'
+import { useDebouncedValue } from '@/shared/lib/use-debounced-value'
 
 const PAGE_SIZE = 5
 const MANAT = '₼'
@@ -54,6 +55,7 @@ export function ProductsList() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [deleteProduct, setDeleteProduct] = useState<Product | null>(null)
   const [columnFilters, setColumnFilters] = useState<Partial<Record<FilterColumn, string>>>({})
+  const filters = useDebouncedValue(columnFilters)
   const [page, setPage] = useState(1)
 
   const products = useMemo(() => data?.data ?? [], [data])
@@ -63,12 +65,12 @@ export function ProductsList() {
     return products.filter((product) => {
       if (search && !product.title.toLowerCase().includes(search)) return false
       for (const column of FILTER_COLUMNS) {
-        const value = columnFilters[column.key]?.trim().toLowerCase()
+        const value = filters[column.key]?.trim().toLowerCase()
         if (value && !columnText(product, column.key).toLowerCase().includes(value)) return false
       }
       return true
     })
-  }, [products, debouncedSearch, columnFilters])
+  }, [products, debouncedSearch, filters])
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
 
@@ -78,7 +80,7 @@ export function ProductsList() {
 
   useEffect(() => {
     setPage(1)
-  }, [debouncedSearch, columnFilters])
+  }, [debouncedSearch, filters])
 
   const startIndex = (page - 1) * PAGE_SIZE
   const pageItems = filtered.slice(startIndex, startIndex + PAGE_SIZE)
@@ -189,6 +191,8 @@ export function ProductsList() {
                         alt=""
                         loading="lazy"
                         decoding="async"
+                        width={36}
+                        height={36}
                         className="size-9 rounded-[8px] object-cover"
                       />
                     ) : (

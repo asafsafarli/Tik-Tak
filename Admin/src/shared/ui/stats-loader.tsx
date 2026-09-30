@@ -7,7 +7,6 @@ interface StatsLoaderProps {
   className?: string
 }
 
-// Admin-in loading göstəricisi — adi spinner əvəzinə "canlanan" sütun diaqramı.
 export function StatsLoader({ label = 'Məlumatlar yüklənir...', className }: StatsLoaderProps) {
   return (
     <div
