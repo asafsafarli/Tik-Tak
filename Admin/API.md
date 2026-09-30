@@ -231,6 +231,9 @@ yadda saxlanmış cavabın `originalRequest.url`-i `/orders/admin/stats`-dır. C
 - 6-cı kart "Ləğv edilən" (`CANCELLED`) stats endpoint-ində yoxdur; client hesablama
   6 kartın hamısını verir.
 - Yəni stats endpoint-i çağırmaq **əlavə sorğu, az məlumat** deməkdir.
+- **"Ümumi satış" yalnız `DELIVERED` sifarişlərin `total`-larının cəmidir** — backend-in
+  `TOTAL_REVENUE`-u ilə eyni tərif (canlı yoxlanıldı 2026-10-01: hər ikisi 19614.26).
+  Əvvəl bütün sifarişlər (ləğv edilənlər daxil) toplanırdı və rəqəm ~23 dəfə şişirdi.
 
 Gələcəkdə sifariş sayı çox böyüyüb server-side paginasiyaya keçilsə, `GET /orders/admin/stats`
 (+ `CANCELLED` üçün fallback) istifadə etmək məntiqli olar.
