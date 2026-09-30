@@ -9,5 +9,6 @@ export function useUsers() {
   return useQuery({
     queryKey: userKeys.list,
     queryFn: async () => (await listUsers()).data,
+    staleTime: 5 * 60_000,
   })
 }
