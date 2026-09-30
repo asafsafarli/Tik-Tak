@@ -16,7 +16,7 @@ export function LoginForm() {
   } = useLoginForm();
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-full flex-col gap-6">
+    <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
       <TextField
         id="login-phone"
         label="Telefon nömrəsi"
