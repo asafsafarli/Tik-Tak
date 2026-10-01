@@ -16,9 +16,6 @@ function formatRemaining(seconds: number) {
   return `${minutes}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
-// "Sifarişi tamamla" basılanda açılan təsdiq modalı. 3 dəqiqəlik geri sayım
-// bitəndə modal öz-özünə bağlanır (sifariş göndərilmir). Portal naxışı
-// `ProductImageModal`-dakı kimidir.
 export function CheckoutConfirmModal({
   isSubmitting,
   onConfirm,
@@ -62,7 +59,6 @@ export function CheckoutConfirmModal({
         aria-labelledby="checkout-confirm-title"
         className="relative z-10 flex w-[614px] max-w-full flex-col items-center rounded-[20px] bg-white px-6 pt-[45px] pb-[79px] text-center"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/time.svg" alt="" aria-hidden className="w-[224px] max-w-full" />
 
         <h2

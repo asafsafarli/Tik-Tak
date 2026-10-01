@@ -1,9 +1,6 @@
 import { API_BASE_URL } from "@/shared/config/env";
 import { tokenStorage } from "@/shared/lib/token-storage";
 
-// `apiFetch` 401 alanda bunu çağırır. Eyni anda bir neçə sorğu 401 alsa belə
-// refresh yalnız bir dəfə gedir (in-flight promise paylaşılır). Bir dəfə uğursuz
-// olandan sonra latch qalır — səhifə yenilənənə / yenidən login olunana qədər.
 let inFlight: Promise<boolean> | null = null;
 let refreshFailed = false;
 
@@ -47,7 +44,6 @@ async function runRefresh(): Promise<boolean> {
     tokenStorage.setTokens(data.access_token, data.refresh_token);
     return true;
   } catch {
-    // Şəbəkə xətası — latch qoymuruq, sonrakı sorğu təkrar cəhd edə bilər.
     return false;
   }
 }

@@ -32,8 +32,6 @@ export function PromoHero({ slides }: PromoHeroProps) {
   }, []);
 
   const maxIndex = Math.max(0, slides.length - perView);
-  // `index` render-də həmişə clamp olunur; resize-dan sonra state-i əl ilə
-  // düzəltməyə ehtiyac yoxdur.
   const clamped = Math.min(index, maxIndex);
 
   const move = (dir: 1 | -1) =>
@@ -73,7 +71,6 @@ export function PromoHero({ slides }: PromoHeroProps) {
                   >
                     {slide.imgUrl ? (
                       <>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={slide.imgUrl}
                           alt=""
@@ -92,7 +89,6 @@ export function PromoHero({ slides }: PromoHeroProps) {
                       />
                     )}
 
-                    {/* Bütün kart kliklənir — "Ətraflı" isə klaviatura üçün əsas link olaraq qalır. */}
                     <Link
                       href={slide.href}
                       aria-hidden

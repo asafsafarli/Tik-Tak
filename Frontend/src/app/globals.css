@@ -23,8 +23,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Tailwind v4 düymələrin kursorunu `default`-a qaytarır — klik oluna bilən
-   hər şeydə əl kursoru olsun. */
 @layer base {
   a[href],
   button:not(:disabled),

@@ -18,12 +18,10 @@ const PAYMENT_METHODS: { value: PaymentMethod; label: string; icon: string }[] =
   { value: "CARD", label: "Qapıda kart ilə ödəmə", icon: "/card.svg" },
 ];
 
-// Girişsiz istifadəçi checkout edə bilməz (`POST /orders/checkout` auth
-// tələb edir) — `FavoritesPage`-dəki eyni naxışla /login-ə yönləndirilir.
 export function CheckoutPage() {
   const router = useRouter();
   const { profile, isAuthenticated, isLoading } = useSession();
-  const { lines, total, clear } = useBasket();
+  const { lines, total, reset } = useBasket();
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CASH");
   const [note, setNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -66,7 +64,7 @@ export function CheckoutPage() {
         address: profile.address ?? "",
         phone: profile.phone,
       });
-      clear();
+      reset();
       setIsDone(true);
     } catch {
       setError("Sifariş göndərilmədi, yenidən cəhd edin.");
@@ -153,7 +151,6 @@ export function CheckoutPage() {
                           }`}
                         >
                           <span className="flex items-center gap-3">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={method.icon} alt="" aria-hidden className="w-[47px]" />
                             <span
                               className={`text-[15px] font-medium leading-none ${

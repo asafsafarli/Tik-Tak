@@ -16,16 +16,6 @@ interface Rect {
 const inputClassName =
   "h-11 w-full rounded-xl bg-neutral-100 pl-4 pr-10 text-sm text-ink outline-none transition-colors focus:bg-white placeholder:text-neutral-400";
 
-// Fokuslananda bütün səhifə (header daxil) tündləşir, yalnız axtarış qutusu
-// və nəticə paneli üstdə aydın qalır. Bunun üçün header-dəki input əslində
-// "ghost" (görünməz, yalnız yer tutan) olur — açılanda eyni ölçüdə bir kopyası
-// `document.body`-ə portal edilir, overlay-dən yuxarı z-index-lə. Sırf CSS
-// z-index ilə mümkün deyil: header öz stacking context-ini yaratdığı üçün
-// (bax `SiteHeader`-dəki `backdrop-blur`) overlay ondan yuxarı olsa, header-in
-// içindəki heç nə z-index ilə üstünə çıxa bilməz — məhz buna görə input portal
-// edilir. `GET /products` sorğusu 300ms debounce ilə gedir (bax
-// `entities/product/api/product.ts` — eyni auth+fallback naxışı, qonaq üçün
-// də işləyir).
 export function SiteSearch() {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -40,14 +30,24 @@ export function SiteSearch() {
   useEffect(() => {
     const trimmed = query.trim();
     if (!trimmed) return;
+    let active = true;
     const timeout = setTimeout(() => {
       setIsLoading(true);
       getProducts({ search: trimmed, limit: 6 })
-        .then(setResults)
-        .catch(() => setResults([]))
-        .finally(() => setIsLoading(false));
+        .then((data) => {
+          if (active) setResults(data);
+        })
+        .catch(() => {
+          if (active) setResults([]);
+        })
+        .finally(() => {
+          if (active) setIsLoading(false);
+        });
     }, 300);
-    return () => clearTimeout(timeout);
+    return () => {
+      active = false;
+      clearTimeout(timeout);
+    };
   }, [query]);
 
   useEffect(() => {
@@ -95,9 +95,10 @@ export function SiteSearch() {
               >
                 <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-neutral-50">
                   {product.img_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={product.img_url}
+                      loading="lazy"
+                      decoding="async"
                       alt={product.title}
                       className="size-full object-contain"
                     />

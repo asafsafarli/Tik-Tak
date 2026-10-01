@@ -4,7 +4,6 @@ interface TextFieldProps extends ComponentProps<"input"> {
   label: string;
 }
 
-// Auth formlarının input-u: hündürlük 48, radius 10, konteynerin tam eni, açıq boz fon.
 export function TextField({ label, id, className = "", ...props }: TextFieldProps) {
   return (
     <div className="flex w-full flex-col gap-2">

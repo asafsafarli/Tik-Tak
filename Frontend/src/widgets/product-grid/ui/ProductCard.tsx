@@ -15,9 +15,10 @@ export function ProductCard({ product }: { product: Product }) {
       <Link href={`/product/${product.id}`} className="contents">
         <span className="mx-auto flex aspect-square w-full max-w-[127px] items-center justify-center overflow-hidden rounded-lg">
           {product.img_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={product.img_url}
+              loading="lazy"
+              decoding="async"
               alt={product.title}
               className="size-full object-contain"
             />

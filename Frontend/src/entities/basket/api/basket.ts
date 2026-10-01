@@ -1,8 +1,6 @@
 import { apiFetch } from "@/shared/api";
 import type { BasketResponse } from "../model/types";
 
-// Basket sətirləri `product_id`-yə görə idarə olunur, body qəbul etmir,
-// hər əməliyyat yenilənmiş basket-in tamını qaytarır (bax Frontend/API.md).
 export function getBasket() {
   return apiFetch<BasketResponse>("/basket", {
     auth: true,

@@ -9,8 +9,6 @@ interface LogoutConfirmModalProps {
   onClose: () => void;
 }
 
-// "Hesabdan çıx" basılanda açılan təsdiq modalı. Portal naxışı
-// `CheckoutConfirmModal`-dakı kimidir.
 export function LogoutConfirmModal({ onConfirm, onClose }: LogoutConfirmModalProps) {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {

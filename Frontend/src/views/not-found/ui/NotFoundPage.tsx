@@ -9,7 +9,6 @@ export function NotFoundPage() {
       <main className="flex-1 overflow-x-hidden bg-[#F4F4F6] py-8 sm:py-10">
         <Container wide className="flex flex-col">
           <div className="flex flex-col items-center gap-8 rounded-[10px] bg-white px-6 py-16 text-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/404.svg"
               alt=""

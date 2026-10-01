@@ -16,9 +16,10 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
           >
             <span className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg bg-neutral-50">
               {category.img_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={category.img_url}
+                  loading="lazy"
+                  decoding="async"
                   alt={category.name}
                   className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />

@@ -1,4 +1,4 @@
-import { apiFetch } from "@/shared/api";
+import { apiFetch, cachedRequest, peekCached } from "@/shared/api";
 import type { Product } from "../model/types";
 
 interface GetProductsParams {
@@ -8,28 +8,33 @@ interface GetProductsParams {
   limit?: number;
 }
 
-// `/products` da `/categories` kimi token tələb edir (bax Frontend/API.md).
-// Qonaq/şəbəkə xətasında `redirectOnAuthFail:false` — çağıran `ApiError`
-// tutub ehtiyat siyahı göstərir.
-export function getProducts({
-  categoryId,
-  search,
-  page,
-  limit,
-}: GetProductsParams = {}) {
-  return apiFetch<Product[]>("/products", {
-    auth: true,
-    redirectOnAuthFail: false,
-    params: { category_id: categoryId, search, page, limit },
-  });
+const PRODUCTS_TTL = 60_000;
+
+function productsKey({ categoryId, search, page, limit }: GetProductsParams) {
+  return `products:${categoryId ?? ""}:${search ?? ""}:${page ?? ""}:${limit ?? ""}`;
 }
 
-// Tək məhsulun detalı — eyni auth+fallback naxışı. `is_favorite` sahəsini
-// (bax Frontend/API.md) qəsdən oxumuruq — favorit vəziyyəti tək mənbədən
-// (`entities/favorite`) idarə olunur ki, iki fərqli mənbə uyuşmasın.
+export function getProducts(params: GetProductsParams = {}) {
+  const { categoryId, search, page, limit } = params;
+  return cachedRequest(productsKey(params), PRODUCTS_TTL, () =>
+    apiFetch<Product[]>("/products", {
+      auth: true,
+      redirectOnAuthFail: false,
+      params: { category_id: categoryId, search, page, limit },
+    }),
+  );
+}
+
+export function peekProducts(params: GetProductsParams = {}) {
+  return peekCached<Product[]>(productsKey(params));
+}
+
 export function getProduct(id: number) {
-  return apiFetch<Product>(`/products/${id}`, {
-    auth: true,
-    redirectOnAuthFail: false,
-  });
+  return cachedRequest(`product:${id}`, PRODUCTS_TTL, () =>
+    apiFetch<Product>(`/products/${id}`, { auth: true, redirectOnAuthFail: false }),
+  );
+}
+
+export function peekProduct(id: number) {
+  return peekCached<Product>(`product:${id}`);
 }

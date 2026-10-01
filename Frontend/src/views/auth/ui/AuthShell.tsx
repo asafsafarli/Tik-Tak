@@ -27,16 +27,13 @@ export function AuthShell({ active, children }: AuthShellProps) {
 
   return (
     <div className="grid min-h-0 flex-1 md:grid-cols-2">
-      {/* Loqo öz sətrindədir, şəkil yalnız altda qalan boşluğa sığdırılır —
-          beləcə heç bir ekran ölçüsündə loqonun üstünə düşmür. */}
       <aside className="hidden min-h-0 flex-col overflow-hidden bg-leaf md:flex">
         <span className="shrink-0 px-8 pt-8 text-[40px] font-extrabold leading-none tracking-[0.03em] text-[#2B3043] lg:px-12 lg:pt-10 lg:text-[56px] xl:text-[64px]">
           TIK TAK
         </span>
         <div className="relative min-h-0 flex-1">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/strawberry.svg"
+            src="/strawberry.webp"
             alt=""
             aria-hidden
             className="pointer-events-none absolute inset-0 size-full object-contain object-left"

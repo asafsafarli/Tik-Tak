@@ -1,4 +1,3 @@
-// Formatlı telefon girişini backend-in gözlədiyi `+994XXXXXXXXX` formatına gətirir.
 export function normalizePhone(input: string): string {
   const digits = input.replace(/[^\d]/g, "");
   if (!digits) return "";

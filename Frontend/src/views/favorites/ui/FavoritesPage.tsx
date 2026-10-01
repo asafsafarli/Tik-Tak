@@ -10,8 +10,6 @@ import { useSession } from "@/entities/session";
 import { useFavorite } from "@/entities/favorite";
 import { SKIP_AUTH_GUARD } from "@/shared/config/env";
 
-// `AuthShell.tsx`-dəki eyni naxışın tərsi — bura yalnız girişli istifadəçi
-// üçündür, girişsiz açılsa /login-ə göndərilir.
 export function FavoritesPage() {
   const { isAuthenticated, isLoading } = useSession();
   const { products } = useFavorite();

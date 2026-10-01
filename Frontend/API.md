@@ -47,6 +47,18 @@ Bütün cavablar eyni zərfə sarılıb: `{ message, data, result }`. `apiFetch`
 
 Yeni bir hissə qoşulanda bu cədvəldəki sətri **✅ Qoşulub**-a çevir və fayl sütununu doldur.
 
+### Client keşi (`shared/api/cache.ts`)
+
+GET sorğuları yaddaşda keşlənir, eyni anda gedən eyni sorğular birləşdirilir və login/logout zamanı keş tam təmizlənir.
+
+| Sorğu | Müddət | Qeyd |
+|---|---|---|
+| `GET /categories` | 5 dəq | |
+| `GET /products` (parametrlərə görə), `GET /products/:id` | 60 san | axtarış nəticələri də daxildir |
+| `GET /orders/user` | 30 san | `checkout` uğurlu olanda keş silinir |
+
+Səhifələr ilk render-də keşdəki dəyəri (`peek*`) göstərir, sonra fonda yeniləyir. Basket və favorites keşlənmir: onlar kontekstdə saxlanılır və profil ilə paralel yüklənir (`hasSession`). Basket dəyişiklikləri optimistic tətbiq olunur, sorğular növbə ilə gedir və sonuncu cavab server vəziyyəti kimi qəbul edilir. Checkout-dan sonra `DELETE /basket/clear` göndərilmir, çünki backend səbəti özü təmizləyir.
+
 ---
 
 ## Auth

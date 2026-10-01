@@ -24,7 +24,6 @@ export function AvatarCard({ className = "" }: { className?: string }) {
         className="group relative mt-5 flex size-[128px] items-center justify-center overflow-hidden rounded-full bg-brand-soft"
       >
         {imgUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img src={imgUrl} alt={fullName} className="size-full object-cover" />
         ) : (
           <UserIcon className="size-12 text-[#BABBC2]" />

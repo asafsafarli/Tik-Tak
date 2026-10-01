@@ -10,8 +10,6 @@ import { Container } from "@/shared/ui/container";
 import { useSession } from "@/entities/session";
 import { SKIP_AUTH_GUARD } from "@/shared/config/env";
 
-// Yalnız girişli istifadəçi üçün — `FavoritesPage`-dəki eyni naxışla
-// girişsiz açılsa /login-ə göndərilir.
 export function ProfilePage() {
   const router = useRouter();
   const { profile, isAuthenticated, isLoading } = useSession();
@@ -33,7 +31,6 @@ export function ProfilePage() {
             <AccountSidebar className="lg:w-[260px] lg:shrink-0 2xl:w-[300px]" />
             <div className="flex min-w-0 flex-1 flex-col gap-5 xl:flex-row xl:items-start">
               <div className="min-w-0 flex-1">
-                {/* Profil gələndə forma yenidən mount olunur ki, ilkin dəyərləri götürsün. */}
                 <ProfileForm key={profile?.id ?? "empty"} profile={profile} />
               </div>
               <AvatarCard className="xl:w-[240px] xl:shrink-0" />

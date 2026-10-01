@@ -92,9 +92,10 @@ function OrderInfo({ order }: { order: Order }) {
           >
             <span className="flex size-12 items-center justify-center overflow-hidden">
               {item.product.img_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={item.product.img_url}
+                  loading="lazy"
+                  decoding="async"
                   alt={item.product.title}
                   className="size-full object-contain"
                 />

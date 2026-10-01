@@ -33,7 +33,7 @@ export function BasketPage() {
                   <h1 className="text-[24px] font-bold leading-none text-ink">Səbətim</h1>
                   <button
                     type="button"
-                    onClick={() => clear({ notify: true })}
+                    onClick={clear}
                     className="text-[14px] font-normal leading-none text-muted transition-opacity hover:opacity-70"
                   >
                     Səbəti təmizlə
@@ -45,9 +45,10 @@ export function BasketPage() {
                     <li key={line.product.id} className="flex items-center gap-3 py-4 sm:gap-4 sm:py-5">
                       <span className="flex size-14 shrink-0 items-center sm:size-20 justify-center overflow-hidden rounded-lg">
                         {line.product.img_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={line.product.img_url}
+                            loading="lazy"
+                            decoding="async"
                             alt={line.product.title}
                             className="size-full object-contain"
                           />
@@ -133,7 +134,6 @@ export function BasketPage() {
 function BasketEmptyState() {
   return (
     <div className="flex h-[420px] flex-col items-center justify-center gap-4 rounded-[10px] bg-white text-center">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/basket.svg" alt="" aria-hidden className="h-[200px] w-[239px]" />
       <p className="text-[26px] font-bold leading-none text-[#92D871]">Səbətiniz boşdur</p>
       <p className="text-[20px] font-normal leading-none text-center text-[#2F2E41]">

@@ -8,12 +8,14 @@ import { Container } from "@/shared/ui/container";
 import {
   FALLBACK_CATEGORIES,
   getCategories,
+  peekCategories,
   type Category,
 } from "@/entities/category";
 
 export function CategoryPage() {
-  // API əlçatmasa (və ya qonaq token-siz açsa) səhifə ehtiyat siyahı ilə açılır.
-  const [categories, setCategories] = useState<Category[]>(FALLBACK_CATEGORIES);
+  const [categories, setCategories] = useState<Category[]>(
+    () => peekCategories() ?? FALLBACK_CATEGORIES,
+  );
 
   useEffect(() => {
     let active = true;
@@ -22,7 +24,6 @@ export function CategoryPage() {
         if (active && data.length > 0) setCategories(data);
       })
       .catch(() => {
-        /* 401 / şəbəkə xətası — ehtiyat siyahı qalır */
       });
     return () => {
       active = false;
@@ -32,9 +33,6 @@ export function CategoryPage() {
   return (
     <>
       <SiteHeader variant="storefront" wide />
-      {/* overflow-x-hidden: promo kartındakı şəkil Figma-dakı kimi kartın
-          kənarından daşır (`OrderPromo`) — bu, kiçik ekranlarda səhifəni üfüqi
-          sürüşdürməsin deyə lazımdır, kartın öz görünüşünə təsir etmir. */}
       <main className="flex-1 overflow-x-hidden bg-[#F4F4F6] py-8 sm:py-10">
         <Container wide>
           <h1 className="sr-only">Kateqoriyalar</h1>

@@ -1,10 +1,5 @@
 import type { Product } from "./types";
 
-// `GET /products` qonaq/şəbəkə xətasında ehtiyat siyahı olaraq istifadə
-// olunur. Hamısı real "Meyvələr və Tərəvəzlər" (`id: 42`, bax
-// `entities/category/model/fallback.ts`) kateqoriyasına aiddir — kateqoriya
-// sidebar-ı yalnız məhsulu olan kateqoriyaları göstərir, ona görə bu id real
-// kateqoriya siyahısındakı biri ilə üst-üstə düşməlidir.
 export const FALLBACK_PRODUCTS: Product[] = [
   {
     id: 1,

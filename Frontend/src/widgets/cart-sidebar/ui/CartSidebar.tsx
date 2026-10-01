@@ -21,7 +21,6 @@ export function CartSidebar({ className = "" }: { className?: string }) {
       >
         {isEmpty ? (
           <div className="flex flex-col items-center text-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/basket.svg" alt="" aria-hidden className="h-[200px] w-[239px]" />
             <p className="mt-4 text-[26px] font-bold leading-none text-[#92D871]">
               Səbətiniz boşdur
@@ -39,9 +38,10 @@ export function CartSidebar({ className = "" }: { className?: string }) {
                 <li key={line.product.id} className="flex items-center gap-2.5">
                   <span className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg">
                     {line.product.img_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={line.product.img_url}
+                        loading="lazy"
+                        decoding="async"
                         alt={line.product.title}
                         className="size-full object-contain"
                       />

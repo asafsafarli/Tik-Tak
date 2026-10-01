@@ -8,9 +8,6 @@ import { Container } from "@/shared/ui/container";
 import { useSession } from "@/entities/session";
 import { SKIP_AUTH_GUARD } from "@/shared/config/env";
 
-// Sifarişlər səhifələrinin ortaq çərçivəsi — `ProfilePage`-dəki eyni başlıq,
-// sidebar və auth guard. `children` render funksiyasıdır ki, sorğu yalnız
-// girişli istifadəçi üçün başlasın.
 export function AccountShell({ children }: { children: (enabled: boolean) => ReactNode }) {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useSession();

@@ -16,14 +16,18 @@ import { useFavorite } from "@/entities/favorite";
 import {
   FALLBACK_PRODUCTS,
   getProduct,
+  peekProduct,
+  peekProducts,
   unitLabel,
   type Product,
 } from "@/entities/product";
 import { formatPrice } from "@/shared/lib/format-price";
 import { ProductImageModal } from "./ProductImageModal";
 
-function fallbackFor(productId: number): Product {
+function initialProduct(productId: number): Product {
   return (
+    peekProduct(productId) ??
+    peekProducts({ limit: 100 })?.find((product) => product.id === productId) ??
     FALLBACK_PRODUCTS.find((product) => product.id === productId) ??
     FALLBACK_PRODUCTS[0]
   );
@@ -31,9 +35,7 @@ function fallbackFor(productId: number): Product {
 
 export function ProductDetailPage({ productId }: { productId: number }) {
   const router = useRouter();
-  // `CategoryDetailPage`-in eyni ehtiyat-siyahı naxışı: API əlçatmasa (və ya
-  // qonaq token-siz açsa) ehtiyat məhsulla açılır.
-  const [product, setProduct] = useState<Product>(() => fallbackFor(productId));
+  const [product, setProduct] = useState<Product>(() => initialProduct(productId));
   const [selectedQty, setSelectedQty] = useState(1);
   const [isImageOpen, setIsImageOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -45,7 +47,6 @@ export function ProductDetailPage({ productId }: { productId: number }) {
         if (active) setProduct(data);
       })
       .catch(() => {
-        /* 401 / şəbəkə xətası — ehtiyat məhsul qalır */
       });
     return () => {
       active = false;
@@ -119,7 +120,6 @@ export function ProductDetailPage({ productId }: { productId: number }) {
                   className="mx-auto flex aspect-square w-full max-w-[280px] shrink-0 cursor-zoom-in items-center justify-center overflow-hidden rounded-lg @[560px]:mx-0"
                 >
                   {product.img_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={product.img_url}
                       alt={product.title}

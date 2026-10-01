@@ -9,7 +9,6 @@ export interface CheckoutPayload {
   phone: string;
 }
 
-// Admin-dəki `OrderStatus` enum-un eynisi (bax Frontend/API.md → Orders).
 export type OrderStatus =
   | "PENDING"
   | "CONFIRMED"

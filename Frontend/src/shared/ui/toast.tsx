@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
@@ -27,8 +28,6 @@ const MAX_TOASTS = 3;
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
-// Eyni mesaj artıq ekrandadırsa yenisi əlavə olunmur, mövcudun vaxtı
-// yenilənir — məs. səbətdə "+" ard-arda basılanda toast yığılmasın.
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const toastsRef = useRef<ToastItem[]>([]);
@@ -69,8 +68,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     [commit, dismiss],
   );
 
+  const value = useMemo(() => ({ show }), [show]);
+
   return (
-    <ToastContext.Provider value={{ show }}>
+    <ToastContext.Provider value={value}>
       {children}
       <div
         aria-live="polite"

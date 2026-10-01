@@ -1,6 +1,5 @@
 import { CAMPAIGN_HREF, type CampaignCard } from "../lib/to-cards";
 
-// API əlçatmaz olduqda göstərilən ehtiyat məzmun.
 export const FALLBACK_HERO_SLIDES: CampaignCard[] = [
   {
     id: -1,

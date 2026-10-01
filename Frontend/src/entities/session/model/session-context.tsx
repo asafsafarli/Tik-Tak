@@ -5,10 +5,12 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { invalidateCache } from "@/shared/api";
 import { tokenStorage } from "@/shared/lib/token-storage";
 import {
   fetchProfile,
@@ -22,6 +24,7 @@ interface SessionContextValue {
   profile: Profile | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  hasSession: boolean;
   login: (phone: string, password: string) => Promise<void>;
   signup: (fullName: string, phone: string, password: string) => Promise<void>;
   logout: (redirectTo?: string) => void;
@@ -34,15 +37,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-  // `logout(redirectTo)` zamanı profil yalnız yeni səhifəyə keçəndən sonra
-  // sıfırlanır — yoxsa hesab səhifələrinin auth guard-ı istifadəçini
-  // `redirectTo` əvəzinə /login-ə atır.
   const [pendingLogoutPath, setPendingLogoutPath] = useState<string | null>(null);
   if (pendingLogoutPath !== null && pathname === pendingLogoutPath) {
     setPendingLogoutPath(null);
     setProfile(null);
   }
-  // Token varsa profil çəkilənə qədər "yüklənir" sayılır.
   const [isLoading, setIsLoading] = useState(
     () => typeof window !== "undefined" && !!tokenStorage.getAccessToken(),
   );
@@ -51,17 +50,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined" || !tokenStorage.getAccessToken()) return;
     fetchProfile()
       .then(setProfile)
-      // 401/token-bitmə hallarını `apiFetch` özü idarə edir (refresh cəhd
-      // edir, alınmasa özü /login-ə yönləndirib tokeni silir) — bura düşən
-      // demək olar hər şey müvəqqəti infrastruktur xətasıdır (502, şəbəkə).
-      // Tokeni silmirik ki, API qayıdandan sonra istifadəçi yenidən login
-      // etməli olmasın.
       .catch(() => {})
       .finally(() => setIsLoading(false));
   }, []);
 
   const login = useCallback(async (phone: string, password: string) => {
     const { tokens, profile: nextProfile } = await loginRequest(phone, password);
+    invalidateCache();
     tokenStorage.setTokens(tokens.access_token, tokens.refresh_token);
     setProfile(nextProfile);
   }, []);
@@ -69,7 +64,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const signup = useCallback(
     async (fullName: string, phone: string, password: string) => {
       await signupRequest(fullName, phone, password);
-      // Backend qeydiyyatdan sonra token qaytarmır — dərhal login edirik.
       await login(phone, password);
     },
     [login],
@@ -82,6 +76,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(
     (redirectTo?: string) => {
       tokenStorage.clear();
+      invalidateCache();
       if (redirectTo) {
         setPendingLogoutPath(redirectTo);
         router.replace(redirectTo);
@@ -92,21 +87,21 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [router],
   );
 
-  return (
-    <SessionContext.Provider
-      value={{
-        profile,
-        isAuthenticated: profile !== null,
-        isLoading,
-        login,
-        signup,
-        logout,
-        updateProfile,
-      }}
-    >
-      {children}
-    </SessionContext.Provider>
+  const value = useMemo<SessionContextValue>(
+    () => ({
+      profile,
+      isAuthenticated: profile !== null,
+      isLoading,
+      hasSession: profile !== null || isLoading,
+      login,
+      signup,
+      logout,
+      updateProfile,
+    }),
+    [profile, isLoading, login, signup, logout, updateProfile],
   );
+
+  return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
 
 export function useSession() {

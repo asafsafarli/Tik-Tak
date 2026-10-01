@@ -5,7 +5,6 @@ export interface BasketLine {
   quantity: number;
 }
 
-// `GET /basket` cavabının zərfi (bax Frontend/API.md → Basket).
 export interface BasketResponse {
   items: Array<{
     id: number;
