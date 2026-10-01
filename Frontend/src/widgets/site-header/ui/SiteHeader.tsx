@@ -16,11 +16,7 @@ const ICONS = {
 };
 
 interface SiteHeaderProps {
-  // "storefront" — ünvan seçicisi + axtarış sahəsi əlavə olunur (mağaza səhifələri).
   variant?: "landing" | "storefront";
-  // Kateqoriya detalı kimi geniş `Container`-dan (bax `wide` prop-u) istifadə
-  // edən səhifələrdə header-in də aşağıdakı hissə ilə eyni sol/sağ kənarda
-  // olması üçün — digər səhifələr (standart 1200px) təsirlənmir.
   wide?: boolean;
 }
 
@@ -65,15 +61,12 @@ export function SiteHeader({ variant = "landing", wide = false }: SiteHeaderProp
         <nav className="flex shrink-0 items-center gap-4 sm:gap-7">
           {HEADER_NAV.map((item) => {
             const Icon = ICONS[item.icon];
-            // Giriş edilməyibsə bu bölmələr login-ə aparır; edilibsə öz
-            // səhifəsinə (səhifələr hazır olana qədər `item.href` = "#").
             const href = isAuthenticated || SKIP_AUTH_GUARD ? item.href : "/login";
             return (
               <Link
                 key={item.label}
                 href={href}
                 className={`relative flex items-center text-[14px] font-normal leading-none tracking-normal text-[#2B3043] transition-opacity hover:opacity-70 ${
-                  // say nişanı ikonun sağına çıxır — mətnə dəyməsin
                   item.icon === "basket" && count > 0 ? "gap-3.5" : "gap-2"
                 }`}
               >

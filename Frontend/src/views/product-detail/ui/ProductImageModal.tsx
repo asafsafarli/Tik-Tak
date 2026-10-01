@@ -16,9 +16,6 @@ interface ProductImageModalProps {
   onClose: () => void;
 }
 
-// Şəkilə klikləyəndə açılan böyütmə modalı. `document.body`-ə portal edilir
-// ki, `ProductDetailPage`-in özündəki elementlərdən asılı olmadan tam ekranı
-// örtsün (bax `SiteSearch.tsx`-dəki eyni portal naxışı).
 export function ProductImageModal({
   imageUrl,
   title,
@@ -57,7 +54,6 @@ export function ProductImageModal({
 
         <div className="flex max-h-[60vh] items-center justify-center overflow-auto rounded-lg bg-neutral-50">
           {imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={imageUrl}
               alt={title}

@@ -1,6 +1,5 @@
 import type { ComponentProps } from "react";
 
-// Auth formlarının əsas düyməsi: tam en × 48, radius 10, yaşıl (#92D871).
 export function Button({ className = "", ...props }: ComponentProps<"button">) {
   return (
     <button

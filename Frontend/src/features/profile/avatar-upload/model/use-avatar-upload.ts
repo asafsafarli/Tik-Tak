@@ -5,9 +5,6 @@ import { useToast } from "@/shared/ui/toast";
 
 const MAX_SIZE_MB = 5;
 
-// Şəkil seçilən kimi `POST /upload`-a yüklənir və URL dərhal `PUT /profile`
-// ilə yadda saxlanır. `PUT` ad və ünvanı da tələb etdiyi üçün onlar profildəki
-// saxlanmış dəyərlərdən götürülür (formadakı yadda saxlanmamış dəyişikliklər yox).
 export function useAvatarUpload() {
   const { profile, updateProfile } = useSession();
   const { show } = useToast();
@@ -29,7 +26,6 @@ export function useAvatarUpload() {
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    // Eyni fayl yenidən seçiləndə də `change` işləsin.
     event.target.value = "";
     if (!file) return;
 

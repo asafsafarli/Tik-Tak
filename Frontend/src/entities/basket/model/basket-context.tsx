@@ -31,7 +31,8 @@ interface BasketContextValue {
   addOne: (product: Product) => void;
   removeOne: (productId: number) => void;
   removeAll: (productId: number) => void;
-  clear: (options?: { notify?: boolean }) => void;
+  clear: () => void;
+  reset: () => void;
 }
 
 const BasketContext = createContext<BasketContextValue | null>(null);
@@ -43,20 +44,81 @@ function toLines(basket: BasketResponse): BasketLine[] {
   }));
 }
 
-// Səbət Basket API-sına tam güvənir (bax Frontend/API.md) — hər əməliyyat
-// server-ə gedir, cavabdakı tam siyahı ilə state əvəzlənir (optimistic update
-// yoxdur). Backend basket endpoint-lərinin hamısı auth tələb etdiyindən qonaq
-// məhsulu səbətə əlavə edə bilməz — məhsulları görə bilir, amma "əlavə et"
-// klikləyəndə qeydiyyatdan keçsin deyə birbaşa /register-ə yönləndirilir.
+type Updater = (current: BasketLine[]) => BasketLine[];
+
+interface Messages {
+  success?: string;
+  error?: string;
+}
+
 export function BasketProvider({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useSession();
+  const { hasSession } = useSession();
   const router = useRouter();
   const { show } = useToast();
   const [lines, setLines] = useState<BasketLine[]>([]);
   const linesRef = useRef(lines);
+  const queueRef = useRef<Promise<unknown>>(Promise.resolve());
+  const pendingRef = useRef(0);
+  const generationRef = useRef(0);
+
   useEffect(() => {
     linesRef.current = lines;
   }, [lines]);
+
+  const [trackedSession, setTrackedSession] = useState(hasSession);
+  if (trackedSession !== hasSession) {
+    setTrackedSession(hasSession);
+    setLines([]);
+  }
+
+  useEffect(() => {
+    generationRef.current += 1;
+    pendingRef.current = 0;
+    queueRef.current = Promise.resolve();
+    if (!hasSession) return;
+    let active = true;
+    getBasket()
+      .then((data) => {
+        if (active && pendingRef.current === 0) setLines(toLines(data));
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [hasSession]);
+
+  const syncFromServer = useCallback((generation: number) => {
+    getBasket()
+      .then((data) => {
+        if (generation === generationRef.current && pendingRef.current === 0) {
+          setLines(toLines(data));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const mutate = useCallback(
+    (update: Updater, request: () => Promise<BasketResponse>, messages: Messages) => {
+      const generation = generationRef.current;
+      setLines(update);
+      pendingRef.current += 1;
+      queueRef.current = queueRef.current.then(request).then(
+        (data) => {
+          if (generation !== generationRef.current) return;
+          pendingRef.current -= 1;
+          if (pendingRef.current === 0) setLines(toLines(data));
+          if (messages.success) show(messages.success);
+        },
+        () => {
+          if (generation !== generationRef.current) return;
+          pendingRef.current -= 1;
+          if (messages.error) show(messages.error, "error");
+          if (pendingRef.current === 0) syncFromServer(generation);
+        },
+      );
+    },
+    [show, syncFromServer],
+  );
 
   const titleOf = useCallback(
     (productId: number) =>
@@ -64,118 +126,94 @@ export function BasketProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  // Giriş vəziyyəti dəyişəndə (login/logout) səbət sıfırlanır — render
-  // zamanı müqayisə edilir ki, effekt daxilində sinxron `setState` olmasın
-  // (React-ın "prop dəyişəndə state-i düzəlt" naxışı, effekt yox).
-  const [trackedAuth, setTrackedAuth] = useState(isAuthenticated);
-  if (trackedAuth !== isAuthenticated) {
-    setTrackedAuth(isAuthenticated);
-    setLines([]);
-  }
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    let active = true;
-    getBasket()
-      .then((data) => {
-        if (active) setLines(toLines(data));
-      })
-      .catch(() => {
-        /* şəbəkə xətası — səbət boş görünür, sonrakı əməliyyatlar yenidən cəhd edir */
-      });
-    return () => {
-      active = false;
-    };
-  }, [isAuthenticated]);
-
   const addOne = useCallback(
     (product: Product) => {
-      if (!isAuthenticated) {
+      if (!hasSession) {
         router.push("/register");
         return;
       }
-      addToBasket(product.id)
-        .then((data) => {
-          setLines(toLines(data));
-          show(`"${product.title}" səbətə əlavə edildi`);
-        })
-        .catch(() => show("Məhsul səbətə əlavə olunmadı", "error"));
+      mutate(
+        (current) =>
+          current.some((line) => line.product.id === product.id)
+            ? current.map((line) =>
+                line.product.id === product.id
+                  ? { ...line, quantity: line.quantity + 1 }
+                  : line,
+              )
+            : [...current, { product, quantity: 1 }],
+        () => addToBasket(product.id),
+        {
+          success: `"${product.title}" səbətə əlavə edildi`,
+          error: "Məhsul səbətə əlavə olunmadı",
+        },
+      );
     },
-    [isAuthenticated, router, show],
+    [hasSession, mutate, router],
   );
 
   const removeOne = useCallback(
     (productId: number) => {
-      if (!isAuthenticated) return;
+      if (!hasSession) return;
       const title = titleOf(productId);
-      removeFromBasket(productId)
-        .then((data) => {
-          setLines(toLines(data));
-          show(title ? `"${title}" səbətdən çıxarıldı` : "Məhsul səbətdən çıxarıldı");
-        })
-        .catch(() => show("Məhsul səbətdən çıxarılmadı", "error"));
+      mutate(
+        (current) =>
+          current
+            .map((line) =>
+              line.product.id === productId ? { ...line, quantity: line.quantity - 1 } : line,
+            )
+            .filter((line) => line.quantity > 0),
+        () => removeFromBasket(productId),
+        {
+          success: title ? `"${title}" səbətdən çıxarıldı` : "Məhsul səbətdən çıxarıldı",
+          error: "Məhsul səbətdən çıxarılmadı",
+        },
+      );
     },
-    [isAuthenticated, show, titleOf],
+    [hasSession, mutate, titleOf],
   );
 
   const removeAll = useCallback(
     (productId: number) => {
-      if (!isAuthenticated) return;
+      if (!hasSession) return;
       const title = titleOf(productId);
-      removeAllFromBasket(productId)
-        .then((data) => {
-          setLines(toLines(data));
-          show(title ? `"${title}" səbətdən çıxarıldı` : "Məhsul səbətdən çıxarıldı");
-        })
-        .catch(() => show("Məhsul səbətdən çıxarılmadı", "error"));
+      mutate(
+        (current) => current.filter((line) => line.product.id !== productId),
+        () => removeAllFromBasket(productId),
+        {
+          success: title ? `"${title}" səbətdən çıxarıldı` : "Məhsul səbətdən çıxarıldı",
+          error: "Məhsul səbətdən çıxarılmadı",
+        },
+      );
     },
-    [isAuthenticated, show, titleOf],
+    [hasSession, mutate, titleOf],
   );
 
-  // Sifarişdən sonrakı avtomatik təmizləmədə toast göstərilmir — yalnız
-  // istifadəçi "Səbəti təmizlə" basanda (`notify: true`).
-  const clear = useCallback(
-    (options?: { notify?: boolean }) => {
-      if (!isAuthenticated) return;
-      clearBasketRequest()
-        .then((data) => {
-          setLines(toLines(data));
-          if (options?.notify) show("Səbət təmizləndi");
-        })
-        .catch(() => {
-          if (options?.notify) show("Səbət təmizlənmədi", "error");
-        });
-    },
-    [isAuthenticated, show],
-  );
+  const clear = useCallback(() => {
+    if (!hasSession) return;
+    mutate(() => [], clearBasketRequest, {
+      success: "Səbət təmizləndi",
+      error: "Səbət təmizlənmədi",
+    });
+  }, [hasSession, mutate]);
 
-  const quantityOf = useCallback(
-    (productId: number) =>
-      lines.find((line) => line.product.id === productId)?.quantity ?? 0,
-    [lines],
-  );
+  const reset = useCallback(() => setLines([]), []);
 
-  const count = useMemo(
-    () => lines.reduce((sum, line) => sum + line.quantity, 0),
-    [lines],
-  );
+  const value = useMemo<BasketContextValue>(() => {
+    const quantities = new Map(lines.map((line) => [line.product.id, line.quantity]));
+    return {
+      lines,
+      count: lines.reduce((sum, line) => sum + line.quantity, 0),
+      total: lines.reduce((sum, line) => sum + Number(line.product.price) * line.quantity, 0),
+      quantityOf: (productId: number) => quantities.get(productId) ?? 0,
+      addOne,
+      removeOne,
+      removeAll,
+      clear,
+      reset,
+    };
+  }, [lines, addOne, removeOne, removeAll, clear, reset]);
 
-  const total = useMemo(
-    () =>
-      lines.reduce(
-        (sum, line) => sum + Number(line.product.price) * line.quantity,
-        0,
-      ),
-    [lines],
-  );
-
-  return (
-    <BasketContext.Provider
-      value={{ lines, count, total, quantityOf, addOne, removeOne, removeAll, clear }}
-    >
-      {children}
-    </BasketContext.Provider>
-  );
+  return <BasketContext.Provider value={value}>{children}</BasketContext.Provider>;
 }
 
 export function useBasket() {

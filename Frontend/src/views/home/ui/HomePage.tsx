@@ -12,7 +12,6 @@ import {
 } from "@/entities/campaign";
 
 export async function HomePage() {
-  // API əlçatmasa landing yenə də ehtiyat məzmunla açılır.
   const campaigns = await getCampaigns().catch(() => []);
 
   const heroSlides = toHeroSlides(campaigns);

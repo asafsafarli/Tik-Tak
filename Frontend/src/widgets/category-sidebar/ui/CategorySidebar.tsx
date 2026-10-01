@@ -6,9 +6,6 @@ interface CategorySidebarProps {
   activeCategoryId: number;
 }
 
-// Figma dev-mode: box 338×348, radius 10 (məhsul/səbət kartları kimi ayrıca
-// ağ blok). "Kateqoriyalar" başlığı box-un ÜSTÜNDƏ, kənarında qalır — box-a
-// daxil deyil (24px/700/leading-none/#2B3043).
 export function CategorySidebar({
   categories,
   activeCategoryId,

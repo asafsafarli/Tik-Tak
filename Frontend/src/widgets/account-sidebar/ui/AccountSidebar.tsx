@@ -32,7 +32,6 @@ export function AccountSidebar({ className = "" }: { className?: string }) {
       className={`flex flex-col rounded-[10px] bg-white px-6 py-2 sm:px-8 ${className}`}
     >
       {ITEMS.map((item, index) => {
-        // `/orders/:id` detalında da "Sifarişlərim" aktiv qalır.
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link

@@ -9,8 +9,6 @@ export interface Profile {
   created_at: string;
 }
 
-// `PUT /profile` — telefon/e-mail bu endpoint-lə dəyişmir. Şifrə sahələri
-// yalnız şifrə dəyişəndə göndərilir.
 export interface UpdateProfilePayload {
   full_name: string;
   address: string;

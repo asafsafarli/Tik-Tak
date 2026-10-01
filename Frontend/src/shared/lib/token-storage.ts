@@ -1,4 +1,3 @@
-// Client tərəf token saxlanması. SSR-də `localStorage` yoxdur — hər giriş qorunur.
 const ACCESS_TOKEN_KEY = "tiktak_access_token";
 const REFRESH_TOKEN_KEY = "tiktak_refresh_token";
 
@@ -20,7 +19,6 @@ export const tokenStorage = {
       window.localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
       window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
     } catch {
-      /* storage əlçatmazdır — səssiz keç */
     }
   },
   clear: () => {
@@ -29,7 +27,6 @@ export const tokenStorage = {
       window.localStorage.removeItem(ACCESS_TOKEN_KEY);
       window.localStorage.removeItem(REFRESH_TOKEN_KEY);
     } catch {
-      /* eyni */
     }
   },
 };

@@ -1,7 +1,5 @@
 import type { Category } from "./types";
 
-// API əlçatmaz olduqda (və ya qonaq istifadəçi token-siz açanda) göstərilən
-// ehtiyat siyahı. Kampaniyalardakı `FALLBACK_*` ilə eyni məntiq.
 export const FALLBACK_CATEGORIES: Category[] = [
   {
     id: 34,

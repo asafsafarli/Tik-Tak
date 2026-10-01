@@ -1,8 +1,3 @@
-// Landing üçün statik məzmun.
-// Kampaniya blokları (hero + xüsusi təkliflər) artıq API-dən gəlir
-// (`@/entities/campaign`). Buradakılar API-yə bağlı olmayan bölmələrdir:
-// göstəricilər, footer, sosial linklər, naviqasiya.
-
 export const COMPANY_STATS = [
   { id: "markets", value: "137", label: "Market sayı", icon: "store" as const },
   { id: "regions", value: "11", label: "Region", icon: "map" as const },

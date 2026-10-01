@@ -27,8 +27,6 @@ function OrdersTable({ enabled }: { enabled: boolean }) {
       ) : !orders?.length ? (
         <p className="mt-6 text-[14px] text-muted">Hələ sifarişiniz yoxdur.</p>
       ) : (
-        // Cədvəl yalnız panelin öz eni (container query) 760px-ə çatanda
-        // göstərilir; daha dar yerdə (telefon, planşet) hər sifariş kartdır.
         <div className="@container mt-6">
           <ul className="flex flex-col gap-3 @[760px]:hidden">
             {orders.map((order) => (

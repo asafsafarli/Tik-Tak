@@ -1,4 +1,3 @@
-// Admin-dəki `ProductMeasure` enum-un eynisi (bax Frontend/API.md → Products).
 export type ProductMeasure =
   | "kg"
   | "gr"

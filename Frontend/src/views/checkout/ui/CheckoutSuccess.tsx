@@ -7,8 +7,6 @@ import { Container } from "@/shared/ui/container";
 
 const REDIRECT_SECONDS = 4;
 
-// Sifariş uğurla göndəriləndən sonra checkout səhifəsinin yerinə göstərilir,
-// qısa geri saymadan sonra istifadəçi "Sifarişlərim" səhifəsinə keçirilir.
 export function CheckoutSuccess() {
   const router = useRouter();
   const [remaining, setRemaining] = useState(REDIRECT_SECONDS);
@@ -28,7 +26,6 @@ export function CheckoutSuccess() {
     <main className="flex-1 overflow-x-hidden bg-[#F4F4F6] py-8 sm:pt-[70px]">
       <Container wide>
         <div className="flex min-h-[480px] flex-col items-center rounded-[10px] bg-white px-6 pt-[81px] pb-16 text-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/ok.svg" alt="" aria-hidden className="w-[198px] max-w-full" />
           <h1 className="mt-10 text-[20px] font-medium leading-none text-[#1A1D28]">
             Sifariş uğurla tamamlandı

@@ -15,11 +15,8 @@ function clean(text: string | null): string | null {
   return normalized.length > 0 ? normalized : null;
 }
 
-// Kampaniya detal route-u yoxdur — kartlar kateqoriyalar səhifəsinə aparır,
-// oradan istifadəçi (qonaq da) kateqoriya seçib məhsullara baxır.
 export const CAMPAIGN_HREF = "/category";
 
-/** Promo hero slayderi üçün bütün kampaniyalar (dark / red növbələşir). */
 export function toHeroSlides(campaigns: Campaign[]): CampaignCard[] {
   const tones = ["dark", "red"] as const;
   return campaigns.map((campaign, index) => ({
@@ -32,10 +29,6 @@ export function toHeroSlides(campaigns: Campaign[]): CampaignCard[] {
   }));
 }
 
-/**
- * "Xüsusi təkliflər" barmaqlığı üçün kampaniyalar (stone / red növbələşir).
- * Hero slayderi ilk kampaniyalardan başladığı üçün burada sondakılar göstərilir.
- */
 export function toOfferCards(
   campaigns: Campaign[],
   limit = 4,

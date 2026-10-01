@@ -9,7 +9,7 @@ import { ProductGrid } from "@/widgets/product-grid";
 import { CART_COLUMN, STOREFRONT_COLUMNS } from "@/shared/config/layout";
 import { CartSidebar } from "@/widgets/cart-sidebar";
 import { Container } from "@/shared/ui/container";
-import { FALLBACK_PRODUCTS, getProducts, type Product } from "@/entities/product";
+import { FALLBACK_PRODUCTS, getProducts, peekProducts, type Product } from "@/entities/product";
 
 export function CategoryDetailPage({ categoryId }: { categoryId: number }) {
   const { categories, visibleCategories } = useVisibleCategories();
@@ -41,8 +41,6 @@ export function CategoryDetailPage({ categoryId }: { categoryId: number }) {
 
             <div className="min-w-0">
               <h1 className="sr-only">{activeCategory?.name ?? "Kateqoriya"}</h1>
-              {/* `key`: kateqoriya dəyişəndə (sidebar-dan başqasına keçid) köhnə
-                  kateqoriyanın məhsulları qalmasın deyə komponent təzədən quraşdırılır. */}
               <CategoryProducts key={categoryId} categoryId={categoryId} />
             </div>
 
@@ -55,8 +53,11 @@ export function CategoryDetailPage({ categoryId }: { categoryId: number }) {
 }
 
 function CategoryProducts({ categoryId }: { categoryId: number }) {
-  const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
-  const [products, setProducts] = useState<Product[]>(FALLBACK_PRODUCTS);
+  const [cached] = useState(() => peekProducts({ categoryId }));
+  const [status, setStatus] = useState<"loading" | "loaded" | "error">(
+    cached ? "loaded" : "loading",
+  );
+  const [products, setProducts] = useState<Product[]>(cached ?? FALLBACK_PRODUCTS);
 
   useEffect(() => {
     let active = true;
@@ -67,7 +68,6 @@ function CategoryProducts({ categoryId }: { categoryId: number }) {
         setStatus("loaded");
       })
       .catch(() => {
-        /* 401 / şəbəkə xətası — ehtiyat siyahı qalır */
         if (active) setStatus("error");
       });
     return () => {
@@ -85,7 +85,6 @@ function CategoryProducts({ categoryId }: { categoryId: number }) {
 function CategoryEmptyState() {
   return (
     <div className="flex h-[521px] w-full flex-col items-center justify-center gap-6 rounded-[10px] bg-white text-center">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/x.svg" alt="" aria-hidden className="h-[208px] w-[208px]" />
       <p className="text-[30px] font-medium leading-none text-center text-[#E6E6E6]">
         Bu kateqoriyada məhsul yoxdur

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
+import { preconnect } from "react-dom";
+import { API_BASE_URL } from "@/shared/config/env";
 import { SessionProvider } from "@/entities/session";
 import { BasketProvider } from "@/entities/basket";
 import { FavoriteProvider } from "@/entities/favorite";
@@ -20,6 +22,9 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  preconnect(new URL(API_BASE_URL).origin, { crossOrigin: "anonymous" });
+  preconnect("https://uploads.sarkhanrahimli.dev");
+
   return (
     <html lang="az" className={`${roboto.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-white">

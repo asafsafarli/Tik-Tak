@@ -17,16 +17,9 @@ interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE";
   body?: unknown;
   params?: Record<string, string | number | undefined>;
-  // Client tərəfdə saxlanan access token-i əlavə et; 401-də bir dəfə refresh
-  // et, sonra sorğunu təkrarla, alınmasa sessiyanı təmizlə və /login-ə yönlət.
   auth?: boolean;
-  // `auth` sorğularında refresh alınmasa /login-ə yönləndir (default: true).
-  // Qonağa da açıq olan səhifələr üçün `false` ver — bu halda 401 sadəcə
-  // `ApiError` kimi atılır və çağıran ehtiyat məzmun göstərə bilər.
   redirectOnAuthFail?: boolean;
-  // Açıq bearer token (məs. RSC-də serverdən gələn token üçün).
   token?: string;
-  // Server Component keş ömrü (saniyə). Yalnız serverdə fetch üçün.
   revalidate?: number | false;
 }
 
@@ -46,16 +39,10 @@ function redirectToLogin() {
     typeof window !== "undefined" &&
     !window.location.pathname.startsWith("/login")
   ) {
-    // Sessiya bitib — bütün client state-i sıfırlamaq üçün tam reload ilə keçirik.
-    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-    window.location.assign("/login");
+    window.location.replace("/login");
   }
 }
 
-/**
- * Backend zərfini (`{ message, data, result }`) açıb yalnız `data`-nı qaytarır.
- * Uğursuz cavabda `ApiError` atır.
- */
 export async function apiFetch<T>(
   path: string,
   options: RequestOptions = {},
@@ -72,11 +59,9 @@ export async function apiFetch<T>(
   const url = buildUrl(path, params);
 
   function send() {
-    // FormData-da `Content-Type`-ı brauzer özü (boundary ilə) qoyur.
     const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
-    const headers: Record<string, string> = isFormData
-      ? {}
-      : { "Content-Type": "application/json" };
+    const headers: Record<string, string> =
+      body === undefined || isFormData ? {} : { "Content-Type": "application/json" };
     const bearer = token ?? (auth ? tokenStorage.getAccessToken() : null);
     if (bearer) headers.Authorization = `Bearer ${bearer}`;
 

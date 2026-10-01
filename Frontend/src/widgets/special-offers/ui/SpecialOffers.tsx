@@ -32,9 +32,10 @@ export function SpecialOffers({ offers }: SpecialOffersProps) {
             >
               {offer.imgUrl ? (
                 <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={offer.imgUrl}
+                    loading="lazy"
+                    decoding="async"
                     alt=""
                     aria-hidden
                     className="pointer-events-none absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"

@@ -1,9 +1,6 @@
 import type { ComponentProps } from "react";
 
 interface ContainerProps extends ComponentProps<"div"> {
-  // Kateqoriya detalı kimi geniş 3-sütunlu layout-lar üçün (sidebar + 4
-  // sütunlu məhsul grid-i + səbət standart 1200px-ə sığmır) — digər
-  // səhifələr (header daxil) standart enini saxlayır.
   wide?: boolean;
 }
 

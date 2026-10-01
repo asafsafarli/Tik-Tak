@@ -5,12 +5,15 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/entities/session";
 import type { Product } from "@/entities/product";
+import { useToast } from "@/shared/ui/toast";
 import { getFavorites, toggleFavorite as toggleFavoriteRequest } from "../api/favorite";
 
 interface FavoriteContextValue {
@@ -21,67 +24,73 @@ interface FavoriteContextValue {
 
 const FavoriteContext = createContext<FavoriteContextValue | null>(null);
 
-// `BasketProvider`-in eyni naxışı (bax `entities/basket/model/basket-context.tsx`)
-// — girişli istifadəçi üçün siyahı `GET /products/favorites`-dan çəkilir,
-// qonaq üçün favoritə əlavə etmək mümkün deyil (toggle onu /login-ə göndərir).
 export function FavoriteProvider({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useSession();
+  const { hasSession } = useSession();
   const router = useRouter();
+  const { show } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
+  const productsRef = useRef(products);
 
-  const [trackedAuth, setTrackedAuth] = useState(isAuthenticated);
-  if (trackedAuth !== isAuthenticated) {
-    setTrackedAuth(isAuthenticated);
+  useEffect(() => {
+    productsRef.current = products;
+  }, [products]);
+
+  const [trackedSession, setTrackedSession] = useState(hasSession);
+  if (trackedSession !== hasSession) {
+    setTrackedSession(hasSession);
     setProducts([]);
   }
 
   useEffect(() => {
-    if (!isAuthenticated) return;
+    if (!hasSession) return;
     let active = true;
     getFavorites()
       .then((data) => {
         if (active) setProducts(data);
       })
-      .catch(() => {
-        /* şəbəkə xətası — boş siyahı qalır */
-      });
+      .catch(() => {});
     return () => {
       active = false;
     };
-  }, [isAuthenticated]);
-
-  const isFavorite = useCallback(
-    (productId: number) => products.some((product) => product.id === productId),
-    [products],
-  );
+  }, [hasSession]);
 
   const toggle = useCallback(
     (product: Product) => {
-      if (!isAuthenticated) {
+      if (!hasSession) {
         router.push("/login");
         return;
       }
-      const wasFavorite = products.some((item) => item.id === product.id);
+      const wasFavorite = productsRef.current.some((item) => item.id === product.id);
       setProducts((prev) =>
-        wasFavorite
-          ? prev.filter((item) => item.id !== product.id)
-          : [...prev, product],
+        wasFavorite ? prev.filter((item) => item.id !== product.id) : [...prev, product],
       );
-      toggleFavoriteRequest(product.id).catch(() => {
-        // Sorğu uğursuz oldu — server vəziyyətinə görə düzəlt.
-        getFavorites()
-          .then(setProducts)
-          .catch(() => {});
-      });
+      toggleFavoriteRequest(product.id)
+        .then(() =>
+          show(
+            wasFavorite
+              ? `"${product.title}" siyahıdan çıxarıldı`
+              : `"${product.title}" siyahıya əlavə edildi`,
+          ),
+        )
+        .catch(() => {
+          show(
+            wasFavorite ? "Məhsul siyahıdan çıxarılmadı" : "Məhsul siyahıya əlavə olunmadı",
+            "error",
+          );
+          getFavorites()
+            .then(setProducts)
+            .catch(() => {});
+        });
     },
-    [isAuthenticated, products, router],
+    [hasSession, router, show],
   );
 
-  return (
-    <FavoriteContext.Provider value={{ products, isFavorite, toggle }}>
-      {children}
-    </FavoriteContext.Provider>
-  );
+  const value = useMemo<FavoriteContextValue>(() => {
+    const ids = new Set(products.map((product) => product.id));
+    return { products, isFavorite: (productId: number) => ids.has(productId), toggle };
+  }, [products, toggle]);
+
+  return <FavoriteContext.Provider value={value}>{children}</FavoriteContext.Provider>;
 }
 
 export function useFavorite() {

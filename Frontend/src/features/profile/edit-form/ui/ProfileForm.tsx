@@ -9,7 +9,6 @@ interface FieldProps extends ComponentProps<"input"> {
   error?: string;
 }
 
-// Hesab səhifəsi üçün yığcam sahə: 48px hündürlük, 14px label, disabled vəziyyəti var.
 function Field({ label, id, error, ...props }: FieldProps) {
   return (
     <div className="flex w-full flex-col gap-2">
@@ -34,7 +33,6 @@ function Field({ label, id, error, ...props }: FieldProps) {
   );
 }
 
-// Telefon və e-mail yalnız göstərilir — `PUT /profile` onları qəbul etmir.
 export function ProfileForm({ profile }: { profile: Profile | null }) {
   const form = useProfileForm(profile);
 
